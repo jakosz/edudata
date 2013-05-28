@@ -1,0 +1,26 @@
+.text_main {
+    font-size: 15px;
+    font-weight: bold;
+    font-family: monospace;
+}
+  body {
+      font: 10px sans-serif;
+    }
+
+    .bar rect {
+      fill: steelblue;
+      shape-rendering: crispEdges;
+    }
+
+    .bar text {
+      /* fill: #fff; */
+      /* fill: red; */
+      font-weight:bold;
+      font-size:12px;
+    }
+
+    .axis path, .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }

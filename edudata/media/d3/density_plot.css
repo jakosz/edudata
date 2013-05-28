@@ -1,0 +1,44 @@
+text {
+	font-family: monospace;
+	font-size: 10px;
+    fill: black;
+    stroke: none;
+}
+
+path.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 5px;
+}
+
+.axis {
+	fill: none;
+	stroke: black;
+}
+/*
+.box_window {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+*/
+.svg_in_box {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+/*
+.x.axis path {
+    fill: none;
+    stroke: #000;
+    stroke-width: 1px;
+}
+
+.y.axis {
+    fill: none;
+    stroke: #000;
+    stroke-width: 1px;
+    font-weight: italic;
+}
+*/

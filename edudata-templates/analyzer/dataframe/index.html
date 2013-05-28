@@ -1,0 +1,25 @@
+{% extends "analyzer/dataframe/base.html" %}
+{% block title %}Lista badań IBE {% endblock %}
+
+{% block content %}
+
+{% if latest_dataframe_list %}
+	<table class="table table-stripped table-bordered" style="width:500px">
+	<thead>
+		<tr class="header">
+			<th>Nazwa zbioru danych</th>
+			<th>Opis</th>
+		</tr>
+	</thead>
+	{% for dataframe in latest_dataframe_list %}
+	<tr>	
+		<td><a href="/analyzer/dataframe/{{ dataframe.id }}/">{{ dataframe.name}}</a> </td>
+		<td>{{ dataframe.description }} </td>
+	</tr>
+	{% endfor %}
+	</table>
+{% else %}
+	<p>W tej chwili nie ma żadnych zbiorów danych w bazie</p>
+{% endif %}
+
+{% endblock %}

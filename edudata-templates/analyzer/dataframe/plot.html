@@ -1,0 +1,35 @@
+{% extends "analyzer/dataframe/base.html" %}
+{% if error_message %}
+	 There was an error:{{ error_message }}
+
+{% else %}
+
+
+{% block title %} {{ dataframe.name }} {% endblock %}
+
+{% block page_rel_scripts %} 
+	 <script src="http://d3js.org/d3.v2.min.js?2.10.0"></script>
+         <script src='http://127.0.0.1:8000/media/d3/devel_ibe_plots.js'></script>
+        <link rel = 'stylesheet' type = 'text/css' href = 'http://127.0.0.1:8000/media/d3/ibe_plots.css'>	
+{% endblock %}
+
+{% block content %}
+
+        <h2>{{ dataframe.name }}</h2>
+	<table class="table">
+	{% for key, val in columns.items %}
+		<tr> 
+			<td id ="{{ val.0 }}"> </td>
+		</tr>
+	{% endfor %}
+	</table>
+	<script type="text/javascript">
+	{% for key, val in columns.items %}
+		{{ val.0 }} =   {{ val.1|safe }}
+		hist(values = {{ val.0 }}, html_parent = '#{{ val.0 }}')
+	{% endfor %}
+	</script>
+{% endblock %}
+
+
+{% endif %}

@@ -1,0 +1,50 @@
+Lista TODO aplikacji.
+
+-------------
+TERAZ
+-------------
+1. Wczytanie codebooka i jego weryfikacja/walidacja
+	* Jest skrypt M. Żółtaka w phpie, który można zaadaptować
+2. Analizy jednozmiennowe:
+	* Jeżeli zmienna jest dychotomiczna
+		* Tablea częstości / piechart
+	* Jeżeli zmienna jest nominalna/porządkowa
+		* Tablela częstości / barplot za pomocą labelów z kolumny "etykiety" z codebooka
+	* Jeżeli zmienna jest tekstowa
+	* Jeżeli zmienna jest ilorazowa/interwałowa
+		* Histogram / Wykres gęstości (raczej to drugie wg sugestii MHerbsta)
+		* Opis tendencji centralnych (pozdro dla dr Stycznia):
+			* Średnia
+			* Mediana
+			* 1st Qt / 3rd Qt
+			* Odchylenie standardowe
+	* Jeżeli zmienna jest kodem TERC ( 010101 )
+		* Tabela częstości
+		* Mapa z częstościami
+	* Jeżeli zmienna jest datą
+		* Tabela częstości
+		* Barplot z datą i liczebnościami
+	* Jeżeli zmienna jest wagą
+		* Rozkład (gęstość) wag w zbiorze
+		* Opis tendencji centralnych
+3. Analizy dwuzmiennowe i *wielozmiennowe:
+	Tabele przestawne 
+		* Gotowe rozwiązania:
+			http://oat.openlinksw.com/index.html?pivot#
+			Datatables.net
+				http://datatables.net/forums/discussion/4921/pivot-tables/p1
+4. Udostępnienie zbioru danych w formatach:
+	* CSV: zbiór + codebook
+	* SPSS: txt + skrypt poleceń SPS do przerobienia na SAV (ewentualnie można pokombinować jak zapisywać automatycznie *.SAV
+	* STATA
+	* Excel ???
+	* XML
+-------------
+W PRZYSZŁOŚCI
+-------------
+
+1. Łączenie ramek danych
+2. Obsługa danych SIO
+3. Predefiniowane raporty ( prosty język poleceń, detekcja typów zmiennych i odpowiednie analizy )
+
+

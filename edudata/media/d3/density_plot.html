@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset = 'utf-8'>
+    <title>linear_density</title>
+    <link rel = 'stylesheet' type = 'text/css' href = 'density_plot.css'>
+    <script src = 'http://d3js.org/d3.v2.min.js'></script>
+    <script src = 'ibe_plots.js'></script>
+    <link rel = 'stylesheet' type = 'text/css' href = 'ibe_plots.css'>
+</head>
+<body>
+    <script>
+        // var data = [0,1,10,3,4,5,4,3,2,1,0];
+        var data = [0.0001, 0.0002, 0.0011, 0.0049, 0.0145, 0.0433, 0.0941, 0.1484, 
+                 0.1945, 0.1909, 0.1478, 0.0938, 0.0421, 0.0177, 0.0047, 0.0016, 
+                 0.0003];
+        // density = 
+        // mids = 
+        d3.select('body').append('div').attr('class', 'box_window');
+        d3.select('body').append('div').attr('class', 'hophop');
+        /* wymiary okna */
+        var margin = {top: 30, right: 20, bottom: 30, left: 50},
+            width = 960 - margin.left - margin.right,
+            height = 350 - margin.top - margin.bottom;
+        // rysuj wykres
+        density_plot(data = data, 
+                     parent = 'div.box_window', 
+                     main = 'Tytus de Zoo');
+
+    </script>
+
+</body>
+</html>

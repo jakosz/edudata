@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+    <head>
+        <script src="http://d3js.org/d3.v2.min.js?2.10.0"></script>
+        <script src='devel_ibe_plots.js'></script>
+        <link rel = 'stylesheet' type = 'text/css' href = 'ibe_plots.css'>
+    </head>
+    <body>
+        <table>
+        <tr><td id = 'dupa'></td></tr>
+        </table>
+        <script>
+            values = [15,34,34,34,4,4,5,5,34,34,34,44,43,43,4,4,55,55,5,6,4,43]
+            values2 = [1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6,1,2,3]
+		//d3.range(Math.pow(10, 2)).map(d3.random.normal(0, 100));
+            /* var test = d3.select('#dupa')
+                         .append('svg')
+                         .attr('width', 100)
+                         .attr('height', 100) */
+            hist(values = values, html_parent = '#dupa')
+            hist(values = values2, html_parent = '#dupa2')
+	    console.log(values)
+        </script>
+    </body>
+</html>
