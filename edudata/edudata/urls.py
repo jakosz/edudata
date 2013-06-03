@@ -10,6 +10,9 @@ from django.conf.urls.static import static
 # Aktywuj panel admina / Enable administrative panel. 
 # ? Co dokladnie robi ta fun
 ###
+
+from django.contrib import admin
+
 admin.autodiscover()
 
 urlpatterns = patterns('',

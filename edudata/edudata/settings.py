@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     #'polls'
     'analyzer',
+    'research_db',
 )
 
 # A sample logging configuration. The only tangible logging
