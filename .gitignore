@@ -5,3 +5,26 @@ ibe_plots/*
 *.php  
 opz*
 templates/*
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.source
+
+#####
+*.log
+*.sql
+*.sqlite
