@@ -3,7 +3,7 @@ import research_db.models
 
 
 class DataframeInline(admin.StackedInline):
-    model = Dataframe
+    model = research_db.models.Dataframe
     extra =3
 
 class ResearchProjectAdmin(admin.ModelAdmin):
