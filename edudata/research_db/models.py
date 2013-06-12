@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-
+#TO DO: code cleanup: zastanowić się czy te opisy (help_text) powinny być tu
+# czy też przenieść je już do template/html
 import datetime
 from django.utils import timezone
 from django.db import models
@@ -10,7 +11,7 @@ from django.utils.translation import ugettext as _
 """
 
 class Keyword(models.Model):
-    keyword = models.CharField(max_length=100)
+    keyword = models.CharField(_(u"Słowo kluczowe"),max_length=100)
     
     def __unicode__(self):
         return self.keyword
@@ -26,16 +27,16 @@ class DataframeKeyword(Keyword):
     pass
 
 class Team(models.Model):
-    name = models.CharField(max_length=12)
-    fullname = models.CharField(max_length=100)
-    team_members_to_contact = models.CharField(max_length=300)
+    name = models.CharField(_(u"Skrót nazwy zespołu"),max_length=12)
+    fullname = models.CharField(_(u"Pełna nazwa zespołu"),max_length=100)
+    team_members_to_contact = models.CharField(_(u"Członkowie zespołu do kontaktu w sprawie projektu badawczego"),max_length=300)
 
 class ResearchProject(models.Model):
-    name = models.CharField(max_length=200)
-    subcontractor = models.CharField(max_length=200)
+    name = models.CharField(_(u"Nazwa projektu badawczego"),max_length=200)
+    subcontractor = models.CharField(_(u"Podwykonawca"),max_length=200)
     team          = models.ForeignKey(Team) ## FOREIGN KEY
-    project_start = models.DateField()                                                                                                                                                                
-    project_end   = models.DateField()
+    project_start = models.DateField("Początek projektu")                                                                                                                                                                
+    project_end   = models.DateField("Koniec projektu")
     research_keywords = models.ManyToManyField(ResearchKeyword) #MANY TO MANY
 
     def __unicode__(self):
@@ -45,22 +46,32 @@ class ResearchProject(models.Model):
 
 
 class Dataframe(models.Model):
-    name = models.CharField(max_length=200)    
-    observation_unit = models.CharField(max_length=200) 
+    name = models.CharField(_(u"Nazwa zbioru danych"),help_text=_(u"Nazwa musi być znacząca - dobrze opisująca zbiór danych"),
+            max_length=200)    
+    observation_unit = models.CharField(_(u"Jednostka obserwacji"),
+            help_text=_(u"kto jest bezpośrednim źródłem informacji? (np.stanowisko w instytucji, rodzice o badanych dzieciach, głowa gospodarstwa domowego, itp."),
+            max_length=200) 
     # TODO: Jednostka obserwacji: zdecydowac czy ENUM czy TEXT
-    population = models.CharField(max_length=400)
-    sampling_description = models.TextField()
-    sample_size = models.IntegerField()
-    respondent = models.CharField(max_length=200)
-    research_methods = models.CharField(max_length = 300)
-    collection_method = models.CharField(max_length = 200)
+    population = models.CharField(_(u"Populacja badana"),
+            help_text=_(u"Kto/co stanowiło populacje? Uczniowie, studenci, nauczyciele, gospodarstwa domowe, jednostki?"),
+            max_length=400)
+    sampling_description = models.TextField(_(u"Opis schematu doboru próby"), 
+            help_text=_(u"Jak była losowana próba?"))
+    sample_size = models.IntegerField(_(u"Liczebność próby"))
+    respondent = models.CharField(_(u"Respondent"),
+            help_text=_(u"Od kogo zbierano informacje w badaniu?"),max_length=200)
+    research_methods = models.CharField(_(u"Metoda badania"),
+            help_text=_(u"__DO UZUPEŁNIENIA OPIS__"),max_length = 300)
+    collection_method = models.CharField(_(u"Techniki zbierania danych"),
+            help_text=_(u"Np. CAWI, CATI, Aplikacja na tablety"),
+            max_length = 200)
     keyword = models.ManyToManyField(DataframeKeyword) # MANY TO MANY
-    df = models.FileField(
+    df = models.FileField(_(u"Zbiór danych"),
             upload_to="data/%Y/%m/%d/dataframes",
             max_length=200,
     )
 
-    codebook = models.FileField(
+    codebook = models.FileField(_(u"Codebook"),
             upload_to="data/%Y/%m/%d/codebooks",
             max_length=200,
     )
