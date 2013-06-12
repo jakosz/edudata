@@ -1,0 +1,14 @@
+{% extends "research_db/base.html" %}
+
+{% block title %} {{ dataframe.name }} {% endblock %}
+{% block content %}
+<h1>{{ researchproject.name }} </h1>
+
+<ul>
+	<li>Opis zbioru: {{ dataframe.description }}</li>
+	<li>Ramka danych: {{ dataframe.df }}<a href="http://127.0.0.1:8000/analyzer/dataframe/show/{{ dataframe.id }}"> [zobacz]</a> </li>
+	<li>Codebook: {{ dataframe.codebook }} </li>
+	<li>Data zapisu: {{ dataframe.pub_date }} </li>
+	<li>Metadane o zbiorze: {{ dataframe.metadata }} </li>
+</ul>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "analyzer/dataframe/base.html" %}
+
+{% block title %} {{ dataframe.name }} {% endblock %}
+
+{% block content %}
+{% if error_message %}
+<!--<error>There is no dataframe of that ID</error>-->
+<p class="text-error"><i class="icon-warning-sign"></i> {{ error_message }} . File = {{ dataframe.df }} </p>
+
+
+{% else %}
+	<h2>{{ dataframe.name }}</h2>
+
+	Plik danych {{ dataframe.df }}
+	<br/>Plik codebooka {{ dataframe.codebook }}
+	<br/>Zmienne w zbiorze danych:
+	<form action="/analyzer/dataframe/plot/{{ dataframe.id }}/" method="post">
+	{% csrf_token %}
+	<button type="submit" class="btn">Analizuj wybrane zmienne</button>
+	<br/>
+	<table class="table table-striped table-condensed table-hover table-bordered">
+		{% for var in header %}
+		
+		{%if var %}
+			<tr>	
+				<td>{{ forloop.counter }}. </td>
+				<td><input type="checkbox" name="choice" id="choice{{ forloop.counter }}" value="{{ forloop.counter0 }}" /></td>
+				<td>
+					{{ var }}
+				</td>
+			</tr>
+		{% else %}
+			<tr class="error">
+				<td>{{ forloop.counter }}. </td>
+				<td><input type="checkbox" name="choice" id="choice{{ forloop.counter }}" value="{{ forloop.counter0 }}" /></td>
+				<td>
+					 <div class="text-warning"><i class="icon-warning-sign"></i> Brak nazwy zmiennej</div>
+				</td>
+			</tr>
+		{% endif %}
+		{% endfor %}
+	</table>
+	</form>
+{% endif %}
+{% endblock %}

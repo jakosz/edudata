@@ -1,5 +1,9 @@
 from django.contrib import admin
-from research_db.models import ResearchProject, DataFrame
+import research_db.models
 
-admin.site.register(ResearchProject)
-admin.site.register(DataFrame)
+admin.site.register(research_db.models.ResearchProject)
+admin.site.register(research_db.models.Dataframe)
+admin.site.register(research_db.models.Product)
+admin.site.register(research_db.models.ResearchKeyword)
+admin.site.register(research_db.models.DataframeKeyword)
+admin.site.register(research_db.models.Team)

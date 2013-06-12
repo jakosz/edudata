@@ -1,0 +1,27 @@
+{% extends "research_db/base.html" %}
+{% block title %}Lista badań IBE {% endblock %}
+
+{% block content %}
+
+{% if latest_researchproject_list %}
+	<table class="table table-stripped table-bordered" style="width:500px">
+	<thead>
+		<tr class="header">
+			<th>Nazwa badania</th>
+			<th>Wykonawca</th>
+			<th>Zespół badawczy IBE</th>
+		</tr>
+	</thead>
+	{% for researchproject in latest_researchproject_list %}
+	<tr>	
+		<td><a href="#">{{ researchproject.name}}</a> </td>
+		<td>{{ researchproject.subcontractor }} </td>
+		<td>{{ researchproject.team }} </td>
+	</tr>
+	{% endfor %}
+	</table>
+{% else %}
+	<p>W tej chwili nie ma żadnych zbiorów danych w bazie</p>
+{% endif %}
+
+{% endblock %}
