@@ -1,2 +1,7 @@
 edudata/edudata/local_settings.py 
 *.pyc
+*.mm
+ibe_plots/*  
+*.php  
+opz*
+templates/*
