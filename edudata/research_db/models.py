@@ -5,10 +5,18 @@ import datetime
 from django.utils import timezone
 from django.db import models
 from django.utils.translation import ugettext as _
-
+from django.core.exceptions import ValidationError
 """
  This is a class representing Research project - an abstract concept of a research that consists of different datasets, materials used to conduct research and so on
 """
+
+def is_csv(file):
+    fh = file.open(mode="r")
+    buff = ""
+    for line in fh:
+        buff += line
+    raise ValidationError(_(u"To nie jest plik CSV" + buff))
+
 
 class Keyword(models.Model):
     keyword = models.CharField(_(u"Słowo kluczowe"),max_length=100)
@@ -48,6 +56,7 @@ class ResearchProject(models.Model):
 class Dataframe(models.Model):
     name = models.CharField(_(u"Nazwa zbioru danych"),help_text=_(u"Nazwa musi być znacząca - dobrze opisująca zbiór danych"),
             max_length=200)    
+    research_project = models.ForeignKey(ResearchProject)
     observation_unit = models.CharField(_(u"Jednostka obserwacji"),
             help_text=_(u"kto jest bezpośrednim źródłem informacji? (np.stanowisko w instytucji, rodzice o badanych dzieciach, głowa gospodarstwa domowego, itp."),
             max_length=200) 
@@ -69,6 +78,7 @@ class Dataframe(models.Model):
     df = models.FileField(_(u"Zbiór danych"),
             upload_to="data/%Y/%m/%d/dataframes",
             max_length=200,
+            validators=[is_csv]
     )
 
     codebook = models.FileField(_(u"Codebook"),

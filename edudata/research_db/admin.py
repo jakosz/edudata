@@ -4,7 +4,7 @@ import research_db.models
 
 class DataframeInline(admin.StackedInline):
     model = research_db.models.Dataframe
-    extra =3
+    extra =1
 
 class ResearchProjectAdmin(admin.ModelAdmin):
     inlines = [DataframeInline]
