@@ -5,17 +5,11 @@ import datetime
 from django.utils import timezone
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ValidationError
+from edudata_helpers import is_csv
 """
  This is a class representing Research project - an abstract concept of a research that consists of different datasets, materials used to conduct research and so on
 """
 
-def is_csv(file):
-    fh = file.open(mode="r")
-    buff = ""
-    for line in fh:
-        buff += line
-    raise ValidationError(_(u"To nie jest plik CSV" + buff))
 
 
 class Keyword(models.Model):
@@ -84,6 +78,7 @@ class Dataframe(models.Model):
     codebook = models.FileField(_(u"Codebook"),
             upload_to="data/%Y/%m/%d/codebooks",
             max_length=200,
+            validators=[is_csv]
     )
 
     class Meta:
