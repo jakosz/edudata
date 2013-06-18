@@ -83,9 +83,26 @@ class Dataframe(models.Model):
 
     class Meta:
         ordering = ('name',)
-
-
-
+"""
+class Codebook(models.Model):
+    name = models.CharField(max_length=200)
+    desc_short = models.CharField(max_length=200)
+    desc_long = models.CharField(max_length=200)
+    keywords = models.CharField(max_length=200)
+    type = models.CharField(max_length=200)
+    scale = models.CharField(max_length = 200, choices = \
+            ('',''),
+            ('',''),
+            ('',''),
+            ('',''),
+            )
+    length = models.IntegerField();
+    precision
+    min_value
+    max_value
+    labels
+    condition
+"""
 
 class Product(models.Model):
     product_name = models.CharField(max_length=200,
