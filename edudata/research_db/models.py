@@ -75,7 +75,7 @@ class Dataframe(models.Model):
             validators=[is_csv]
     )
 
-    codebook = models.FileField(_(u"Codebook"),
+    codebook_file = models.FileField(_(u"Codebook"),
             upload_to="data/%Y/%m/%d/codebooks",
             max_length=200,
             validators=[is_csv]
@@ -83,26 +83,46 @@ class Dataframe(models.Model):
 
     class Meta:
         ordering = ('name',)
-"""
+
 class Codebook(models.Model):
     name = models.CharField(max_length=200)
+    dataframe = models.ForeignKey(Dataframe)
     desc_short = models.CharField(max_length=200)
     desc_long = models.CharField(max_length=200)
     keywords = models.CharField(max_length=200)
-    type = models.CharField(max_length=200)
-    scale = models.CharField(max_length = 200, choices = \
-            ('',''),
-            ('',''),
-            ('',''),
-            ('',''),
+    type = models.CharField(max_length=200, choices = \
+                (
+                    ('int',_(u'liczba całkowita')),
+                    ('float', _(u'liczba rzeczywista')),
+                    ('string', _(u'tekst')),
+                    ('date',_(u'data')),
+                    ('TERC',_(u'TERC')),
+                    ('weight',_(u'waga'))
+                )
             )
-    length = models.IntegerField();
-    precision
-    min_value
-    max_value
-    labels
-    condition
-"""
+    scale = models.CharField(max_length = 200, choices = (
+                ('dichotomous',_(u'dychotomiczna')),
+                ('nominal',_(u'nominalna')),
+                ('ordinal',_(u'porządkowa')),
+                ('interval',_(u'interwałowa')),
+                ('ratio',_(u'ilorazowa')),
+                ) ## SEE: codebook FAQ & https://en.wikipedia.org/wiki/Level_of_measurement
+            )
+    value_len = models.IntegerField() # value length
+    precision = models.IntegerField() # only for floating point variables
+    min_value = models.DecimalField(decimal_places = 15, max_digits = 15)
+    max_value = models.DecimalField(decimal_places = 15, max_digits = 15)
+    labels = models.CharField(max_length=300)
+    condition = models.CharField(max_length=300)
+
+
+class Values(models.Model):
+    codebook =  models.ForeignKey(Codebook)
+    row_order = models.IntegerField()
+    value_int = models.IntegerField()
+    value_float = models.DecimalField(decimal_places = 15, max_digits = 15)
+    value_string = models.TextField()
+    
 
 class Product(models.Model):
     product_name = models.CharField(max_length=200,
