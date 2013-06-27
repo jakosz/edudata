@@ -12,7 +12,7 @@ class NestedProductInline(NestedTabularInline):
 class DataframeInline(NestedStackedInline):
     model = research_db.models.Dataframe
     inlines = [NestedProductInline]
-    extra =3
+    extra =1
 
 class DataframeAdmin(admin.ModelAdmin):
     formfield_overrides = {
