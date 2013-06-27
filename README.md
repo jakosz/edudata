@@ -3,8 +3,8 @@ edudata
 
 Django-based application to access &amp; analyze data produced in research projects conducted by Educational Research Institute ( www.ibe.edu.pl )
 
-Dependencies
-=
+# Dependencies
+
 This application requires installation of the following Python packages:
 
 * django-pagedown (https://pypi.python.org/pypi/django-pagedown)
