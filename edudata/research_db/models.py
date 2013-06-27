@@ -5,9 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from edudata_helpers import is_csv
-from django_hstore import hstore
 from pandas import DataFrame as psDataFrame
-import pandas
 import csv
 """
  This is a class representing Research project - an abstract concept of a research that consists of different datasets, materials used to conduct research and so on
