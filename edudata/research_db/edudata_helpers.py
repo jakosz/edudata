@@ -7,7 +7,6 @@ from warnings import warn
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.core.files import File
-from django.core.files.base import ContentFile
 
 # ------------------------------------------------------------------------------ data
 
