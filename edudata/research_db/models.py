@@ -5,8 +5,8 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from edudata_helpers import is_csv
-from pandas import DataFrame as psDataFrame
-import csv
+from mongodb_datahandler import MongoHandler
+
 """
  This is a class representing Research project - an abstract concept of a research that consists of different datasets, materials used to conduct research and so on
 """
@@ -76,13 +76,13 @@ class Dataframe(models.Model):
     df = models.FileField(_(u"Zbiór danych"),
             upload_to="data/%Y/%m/%d/dataframes",
             max_length=200,
-            validators=[is_csv]
+            #validators=[is_csv]
     )
 
     codebook_file = models.FileField(_(u"Codebook"),
             upload_to="data/%Y/%m/%d/codebooks",
             max_length=200,
-            validators=[is_csv]
+            #validators=[is_csv]
     )
     def validate_codebook(self):
         pass
@@ -90,62 +90,6 @@ class Dataframe(models.Model):
     def validate_data(self):
         pass
 
-    def save_codebook(self):
-        ###
-        """
-        Save codebook line by line and for each line save also the data 
-        that is related to that column to Value table
-        """
-        
-        cb_reader = csv.reader(self.codebook_file, delimiter = ';', quotechar = '"')
-        cb_reader.next() ## skip the header of the codebook!
-        data_reader =  csv.reader(self.df,delimiter=";",quotechar='"')
-        data_header = data_reader.next() ## get this header
-        df_rows = [row for row in data_reader]
-        pandas_df = psDataFrame(df_rows,columns=data_header)
-        df_rows = None
-        for nr,row in enumerate(cb_reader):
-
-            #for nr,val in enumerate(row):
-            #    print "Elementy", nr, val
-            cb = Codebook()
-            cb.dataframe = self
-            try:
-                cb.name, cb.desc_short, cb.desc_long, cb.keywords, cb.type,\
-                cb.scale, cb.value_len, cb.precision, cb.min_value,\
-                cb.max_value, cb.labels, cb.condition = row
-            except ValueError,e:
-                print "This should never happen!", len(row)
-                raise ValueError,e
-            if cb.value_len == '':
-                cb.value_len = None
-            if cb.precision == '':
-                cb.precision = None
-            if cb.min_value == '':
-                cb.min_value = None
-            if cb.max_value == '':
-                cb.max_value = None
-
-            assert cb.type in ['liczba rzeczywista', 'liczba całkowita', 'tekst']
-            print "Typ kolumny: ",cb.type
-            print cb
-            cb.save() # save codebook row before saving a column of data
-            Value_array = [] # a shitty container, could be done better
-            try:
-                column = pandas_df[cb.name] # current column - \
-                                # should exists if validate() returned True
-            except IndexError:
-                raise ValidationError, "Codebook and data don't match!"
-            for row_nr,val in enumerate(column,start=1): # przelec po kolumnie przy okazji dodajac nr wiersza
-                print "Key:", cb.name, cb.pk , "Value:",val 
-                value_obj = Value()
-                value_obj.set(cb,val,row_nr)
-                Value_array.append(value_obj)
-            # bulk_create: instead of calling Value.save() method a lot of times
-            #    (in fact no of times = no of rows), create one INSERT VALUES()
-            print Value_array
-            Value.objects.bulk_create(Value_array)
-        
 
     def process_dataframe(self):
         print self.df
@@ -159,15 +103,22 @@ class Dataframe(models.Model):
         except ValidationError:
             pass
         
-        self.save_codebook()
+        mongodb = MongoHandler()
+        mongodb.process_data(self.name, self.codebook_file, self.df)
         #self.save_df()
 
     def save(self, *args, **kwargs):
         super(Dataframe, self).save(*args, **kwargs)
         self.process_dataframe()
+    def get_data(self): # get pandas dataframe
+        mongodb = MongoHandler()
+        return mongodb.get_dataframe(self.name)
+    def get_csv(self):
+        mongodb = MongoHandler()
+        return mongodb.get_csv(self.name,";",'.')
     class Meta:
         ordering = ('name',)
-
+"""
 class Codebook(models.Model):
     name = models.CharField(max_length=200)
     dataframe = models.ForeignKey(Dataframe)
@@ -185,9 +136,9 @@ class Codebook(models.Model):
                 )
             )
     def get_type(self):
-        if self.type == u'liczba całkowita':
+        if self.type.decode('utf-8') == u'liczba całkowita':
             return "int"
-        elif self.type == u'liczba rzeczywista':
+        elif self.type.decode('utf-8') == u'liczba rzeczywista':
             return "float"
         else:
             return "string"
@@ -221,7 +172,7 @@ class Value(models.Model):
                                             # column (row in codebook is a \
                                             # column in df
     row = models.IntegerField()
-    value_int = models.IntegerField(null=True,blank=True)
+    value_int = models.BigIntegerField(null=True,blank=True)
     value_float = models.FloatField(null=True,blank=True)
     value_string = models.CharField(null=True,blank=True,max_length=1024)
 
@@ -241,8 +192,10 @@ class Value(models.Model):
             return self.value_float
         elif type == 'string':
             return self.value_string
+        else:
+            raise ValueError, _(u"Type doesnt' match any condition")
     def set_value(self, val):
-        print "244,Type:",self.codebook.get_type()
+        #print "244,Type:",self.codebook.get_type()
         type = self.codebook.get_type()
         if type == 'int':
             self.value_int = val
@@ -250,7 +203,7 @@ class Value(models.Model):
             self.value_float = val
         elif type == 'string':
             self.value_string = val
-
+"""
 class Product(models.Model):
     product_name = models.CharField(max_length=200,
             choices = (
