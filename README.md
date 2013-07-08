@@ -11,4 +11,5 @@ This application requires installation of the following Python packages:
 * nested\_inlines (https://github.com/Soaa-/django-nested-inlines)
 * python-magic (https://github.com/ahupp/python-magic)
 * chardet (https://pypi.python.org/pypi/chardet)
+* pymongo (https://pypi.python.org/pypi/pymongo/)
 
