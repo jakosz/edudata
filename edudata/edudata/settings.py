@@ -42,8 +42,7 @@ PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-#MEDIA_ROOT = '/home/mikolaj/Dokumenty/edudata/edudata-media/public'
-MEDIA_ROOT = '/home/mikolaj/Dokumenty/edudata/edudata/media/'
+MEDIA_ROOT = os.path.split(PROJECT_ROOT)[0]+'/media/'
 #MODEL_DOC_ROOT = os.path.join( 'model', 'documents' ).replace('\\','/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
