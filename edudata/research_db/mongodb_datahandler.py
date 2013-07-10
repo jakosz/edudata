@@ -54,37 +54,45 @@ class MongoHandler:
         return status
 
 
-    def get_dataframe(self,df_name):
+    def get_dataframe_and_info(self,df_name):
         cursor = self.db.dataframes.find({'df_name':df_name})
         df = cursor.next()
         dfdict = dict()
         rownames = []
-        
-
+        info = dict()
         # TU MUSI BYĆ SORTOWANIE po kluczu i to kluczu INTEGER!!
         for nr,column in enumerate(df['columns']): # type(df['columns']) == type([])
-            #print column['name'], " - ",nr
+            # first, get rownames
             if nr == 0:
                 rownames = column['data'].keys()
-
-            #TODO konwersja na liczby calkowite /zmiennoprzecinkowe - mongdoDB standradowo trzyma WSZYSTKO jako tekst
+            # Replace decimal point ',' with '.' to convert it later to type 'float' 
+            if column['type'] == u'liczba rzeczywista':
+                column['data'] = dict((k, v.replace(',','.')) for (k, v) in column['data'].iteritems())
+            #convert rows from string to INTEGER
             rows = dict((int(key), value) for (key, value) in column['data'].items()) 
+            # prepare dictionary of columns to convert them into pandas.DataFrame
             dfdict[column['name']] = [value for (key,value) in rows.iteritems()]
-    
-        return psDataFrame(dfdict, index = rownames )
+            info[column['name']] = dict((key,value) for key, value in column.iteritems() if key != 'data') # Copy everything but data
+        psDf = psDataFrame(dfdict, index = rownames )
+        """
+        If codebook states that the column is numeric than convert it to numeric
+        """
+        for column in df['columns']:
+            if column['type'] == u'liczba całkowita':
+                psDf[column['name']] = psDf[column['name']].astype(int)
+            elif column['type'] == u'liczba rzeczywista': 
+                psDf[column['name']] = psDf[column['name']].astype(float)
+            else:
+                pass
+        # return dictionary for views.py
+        return {'info':info,'df': psDf}
 
     def get_csv(self, df_name,sep,decimal):
-        pandas_df = self.get_dataframe(df_name)
+        pandas_df = self.get_dataframe(df_name)["df"] # get only DataFrame
         buffer = StringIO.StringIO()
-        
         pandas_df.to_csv(buffer, sep=sep, quoting=csv.QUOTE_NONNUMERIC,encoding="utf-8",float_format=decimal)
         return buffer.getvalue()
-            #data.append(columns['data'])
-            
-        
-    #client = MongoClient()
-    #db = client.dataframes
-    #process_data(db)
+
 
 
 
