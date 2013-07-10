@@ -1,0 +1,16 @@
+{% extends "research_db/base.html" %}
+{% block title %}Lista badań IBE {% endblock %}
+
+{% block content %}
+{% if codebook_info %}
+
+    {{ codebook_info|safe }}
+
+{% endif %}
+{% if summary_html %}
+{{ summary_html|safe }}
+{% else %}
+	<p>Nie otrzymano danych</p>
+{% endif %}
+
+{% endblock %}

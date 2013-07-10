@@ -1,0 +1,32 @@
+{% extends "research_db/base.html" %}
+
+{% block title %} {{ researchproject.name }} {% endblock %}
+{% block content %}
+<h1>{{ researchproject.name }} </h1>
+
+<ul>
+    <li>Początek projektu: <strong>{{ researchproject.project_start }}</strong></li>
+    <li>Koniec projektu: <strong>{{ researchproject.project_end }}</strong></li>
+    <li>Wykonawca badania: <strong>{{ researchproject.subcontractor }}</strong></li>
+
+</ul>
+<h2>Zbiory danych</h2>
+
+{% for dataframe in researchproject.dataframe_set.all %}
+<h3> {{dataframe.name}} </h3>
+<ul>
+    <li> Badana populacja: {{ dataframe.population }} </li>
+    <li> Wielkość próby: {{ dataframe.sample_size}} </li>
+    <li> Schemat doboru próby: {{ dataframe.sampling_description_html|safe }} </li>
+    <li> Metoda badawcza: {{ dataframe.research_methods}} </li>
+    <li> Techniki zbierania danych: {{ dataframe.collection_method}} </li>
+    <li> Respondent: {{ dataframe.respondent}} </li>
+    <li> Jednostka obserwacji: {{ dataframe.observation_unit}} </li>
+    <li> Dane (csv): <a href="{{MEDIA_URL}}{{ dataframe.df }}">pobierz</a> </li>
+
+    <li> Codebook (opis zmiennych): <a href="{{MEDIA_URL}}{{ dataframe.codebook_file }}">pobierz</a> </li>
+
+</ul>
+    <a href="{% url 'dataframe_basicinfo' dataframe.id  %}">Obejrzyj zbiór danych online</a>
+{% endfor %}
+{% endblock %}
