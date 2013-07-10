@@ -1,8 +1,0 @@
-127.0.0.1 - - [25/Oct/2012:14:13:47 +0200] "GET /static/ HTTP/1.1" 404 499 "-" "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0"
-127.0.0.1 - - [25/Oct/2012:14:13:52 +0200] "GET /public/ HTTP/1.1" 404 498 "-" "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0"
-127.0.0.1 - - [25/Oct/2012:14:14:34 +0200] "GET /public/ HTTP/1.1" 404 499 "-" "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0"
-127.0.0.1 - - [25/Oct/2012:14:14:37 +0200] "GET /public/ HTTP/1.1" 404 498 "-" "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0"
-127.0.0.1 - - [25/Oct/2012:14:14:37 +0200] "GET /public/ HTTP/1.1" 404 498 "-" "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0"
-127.0.0.1 - - [25/Oct/2012:14:16:52 +0200] "GET /public/ HTTP/1.1" 404 499 "-" "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0"
-127.0.0.1 - - [25/Oct/2012:14:16:53 +0200] "GET /public/ HTTP/1.1" 404 498 "-" "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0"
-127.0.0.1 - - [25/Oct/2012:14:17:00 +0200] "GET / HTTP/1.1" 304 210 "-" "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0"
