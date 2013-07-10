@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from helpers import is_csv
 from mongodb_datahandler import MongoHandler
-
+import markdown
 """
  This is a class representing Research project - an abstract concept of a research that consists of different datasets, materials used to conduct research and so on
 """
@@ -33,6 +33,9 @@ class Team(models.Model):
     name = models.CharField(_(u"Skrót nazwy zespołu"),max_length=12)
     fullname = models.CharField(_(u"Pełna nazwa zespołu"),max_length=100)
     team_members_to_contact = models.CharField(_(u"Członkowie zespołu do kontaktu w sprawie projektu badawczego"),max_length=300)
+
+    def __unicode__(self):
+        return self.name
 
 class ResearchProject(models.Model):
     name = models.CharField(_(u"Nazwa projektu badawczego"),max_length=200)
@@ -64,6 +67,7 @@ class Dataframe(models.Model):
             max_length=400)
     sampling_description = models.TextField(_(u"Opis schematu doboru próby"), 
             help_text=_(u"Jak była losowana próba?"))
+    sampling_description_html = models.TextField(blank=True)
     sample_size = models.IntegerField(_(u"Liczebność próby"))
     respondent = models.CharField(_(u"Respondent"),
             help_text=_(u"Od kogo zbierano informacje w badaniu?"),max_length=200)
@@ -108,14 +112,16 @@ class Dataframe(models.Model):
         #self.save_df()
 
     def save(self, *args, **kwargs):
+        self.sampling_description_html = markdown.markdown(self.sampling_description)
         super(Dataframe, self).save(*args, **kwargs)
         self.process_dataframe()
     def get_data(self): # get pandas dataframe
         mongodb = MongoHandler()
-        return mongodb.get_dataframe(self.name)
+        return mongodb.get_dataframe_and_info(self.name)
     def get_csv(self):
         mongodb = MongoHandler()
         return mongodb.get_csv(self.name,";",'.')
+
     class Meta:
         ordering = ('name',)
 """
