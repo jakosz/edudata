@@ -125,7 +125,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     #'polls'
     'pagedown',
-    'analyzer',
     'research_db',
     'helpers', 
 )
