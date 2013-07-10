@@ -4,7 +4,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
-from edudata_helpers import is_csv
+from helpers import is_csv
 from mongodb_datahandler import MongoHandler
 
 """

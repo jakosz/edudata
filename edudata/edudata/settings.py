@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'pagedown',
     'analyzer',
     'research_db',
+    'helpers', 
 )
 
 # A sample logging configuration. The only tangible logging
