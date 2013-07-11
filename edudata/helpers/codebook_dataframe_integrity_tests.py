@@ -31,6 +31,19 @@ class cbdfit:
                          'ROZMIAR', 'DOKLADNOSC', 'WART_MIN', 'WART_MAX', 
                          'ETYKIETA', 'WARUNEK']
 
+# Komunikaty błędów ze skryptu Mateusza:
+    # 0=>"Wiersz nie zawiera zmiennej ",
+    # 1=>"Zmienna ma wartość, choć powinna być pusta (jest to zmienna typy u 'kategoria')",
+    # 2=>"Zmienna nie ma wartości choć z filtru wynika, że powinna",
+    # 3=>"Zmienna ma wartość choć z filtru wynika, że nie powinna",
+    # 4=>"Zmienna nie ma wartości",
+    # 5=>"Zmienna ma wartość niezgodną z typem zmiennej %1 != %2",
+    # 6=>"Zmienna ma wartość dłuższą, niż rozmiar określony w codebook-u",
+    # 7=>"Zmienna ma dokładność większą, niż określona w codebook-u",
+    # 8=>"Zmienna ma wartość spoza zakresu opisanego w codebook-u",
+    # 9=>"Zmienna ma wartość spoza zakresu etykiet opisanych w codebook-u (%1)",
+    # 10=>"Wiersz zawiera zmienne niezdefiniowane w codebook-u"
+
 # NAZWA
 def names(cb, df):
     # [pl] Czy nazwy kolumn w df są unikalne?
@@ -48,6 +61,10 @@ def names(cb, df):
     # [pl] Czy zbiory stringów w nagłówku df i pierwszej kolumnie cb są takie same?
     if False in [NAZWA in df.columns for NAZWA in cb['NAZWA']]:
         raise CodebookDataframeIntegrityError('Data file column names and variable names specified in Codebook do not match.')
+    
+    # XXX: ETYKIETA
+    
+    print 'codebook/dataframe names OK.'
 
 def descriptions(cb):
     # OPIS
@@ -68,22 +85,14 @@ def scales(cb, df):
         # Czy nazwy skal pasują do słownika nazw?
     pass
 
-# ROZMIAR
-    # Czy rozmiary Danych są mniejsze lub równe rozmiarom Codebooka?
-# DOKLADNOSC
-# WART_MIN
-# WART_MAX
-# ETYKIETA
-# WARUNEK
+def sizeval(cb, df):
+    # ROZMIAR
+        # Czy rozmiary Danych są mniejsze lub równe rozmiarom Codebooka?
+    # DOKLADNOSC
+    # WART_MIN
+    # WART_MAX
+    pass
 
-# 0=>"Wiersz nie zawiera zmiennej ",
-# 1=>"Zmienna ma wartość, choć powinna być pusta (jest to zmienna typu 'kategoria')",
-# 2=>"Zmienna nie ma wartości choć z filtru wynika, że powinna",
-# 3=>"Zmienna ma wartość choć z filtru wynika, że nie powinna",
-# 4=>"Zmienna nie ma wartości",
-# 5=>"Zmienna ma wartość niezgodną z typem zmiennej %1 != %2",
-# 6=>"Zmienna ma wartość dłuższą, niż rozmiar określony w codebook-u",
-# 7=>"Zmienna ma dokładność większą, niż określona w codebook-u",
-# 8=>"Zmienna ma wartość spoza zakresu opisanego w codebook-u",
-# 9=>"Zmienna ma wartość spoza zakresu etykiet opisanych w codebook-u (%1)",
-# 10=>"Wiersz zawiera zmienne niezdefiniowane w codebook-u"
+def conditions(cb, df):
+    # WARUNEK
+    pass
