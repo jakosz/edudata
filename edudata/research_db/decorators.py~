@@ -1,0 +1,26 @@
+
+def html_row(content):
+    def wrap(row):
+        row_txt = " ".join([cell for cell in row])
+        print content
+        return "<tr>" + content(row_txt) + "</tr>"
+    return wrap
+
+def html_bstrap_table(content):
+    def wrap(data):
+        return '<table border="1" class="table table-stripped table-bordered">' + content(data) + "</table>"
+    return wrap
+
+
+
+@html_row
+def render_codebook_row(column):
+    def html_cell(content):
+        return "<td>"+content+"</td>"
+    for val in column:
+        yield html_cell(val)
+
+@html_bstrap_table
+def render_codebook_info(codebook_info):
+    for column in codebook_info:
+        yield render_codebook_row(column)

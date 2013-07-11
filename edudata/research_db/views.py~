@@ -1,0 +1,44 @@
+# Create your views here.
+
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.views import generic
+from research_db.decorators import *
+from research_db.models import ResearchProject, Dataframe
+
+class ResearchProjectIndex(generic.ListView):
+    print "RP INDEX"
+    template_name = 'research_db/researchproject/index.html'
+    context_object_name = 'researchproject_list'
+    def get_queryset(self):
+        """Return the last five published research projects."""
+        print ResearchProject.objects.all()
+        return ResearchProject.objects.all()
+
+
+class ResearchProjectDetail(generic.DetailView):
+    model = ResearchProject
+    template_name = 'research_db/researchproject/detail.html'
+
+@html_row
+def render_codebook_row(column):
+    for val in column:
+        yield html_cell(val)
+
+@html_bstrap_table
+def render_codebook_info(codebook_info):
+    for column in codebook_info:
+        yield render_codebook_row(column)
+
+def dataframe_basicinfo(request, pk):
+    dataframe = get_object_or_404(Dataframe, pk=pk)
+    data_and_info = dataframe.get_data()
+    psDf = data_and_info['df']
+    codebook_info = data_and_info['info']
+
+    summary_html = psDf.describe().to_html(classes=('table','table-stripped','table-bordered'))
+    return render(request, 'research_db/dataframe/basicinfo.html',
+            {'dataframe': dataframe, 'codebook_info': render_codebook_info(codebook_info),
+                'summary_html':summary_html})
+

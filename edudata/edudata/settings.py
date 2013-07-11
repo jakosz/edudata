@@ -104,7 +104,7 @@ ROOT_URLCONF = 'edudata.urls'
 WSGI_APPLICATION = 'edudata.wsgi.application'
 
 TEMPLATE_DIRS = (
-    '/home/mikolaj/Dokumenty/edudata/edudata-templates/',
+    '/home/mikolaj/projekty-zawodowe/edudata/edudata-templates/',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
