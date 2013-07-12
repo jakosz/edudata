@@ -48,7 +48,10 @@ class cbdfit:
 def names(cb, df):
     # [pl] Czy nazwy kolumn w df są unikalne?
     if len(set(df.columns)) != len(df.columns):
-        raise CodebookDataframeIntegrityError('Data file column names are not unique.')
+        raise CodebookDataframeIntegrityError(_('Data file column names are not unique.'))
+        ## TODO kiedy umieścisz tekst w _('') tak jak zmieniłem powyżej to jest gotowy do tłumaczenia. 
+        ## Tylko chyba jak stosujemy polskie nazwy gdzie indziej to może tu też. Albo na odwrót, bo potem
+        ## będą polsko angielskie w bazie do tłumaczenia. Możemy to tez olać, no ale.
     
     # [pl] Czy nazwy kolumn w cb są zgodne z wymaganiami? XXX: p. Issue #33
     if False in [i in cb.columns for i in cbdfit().cb_names]:
