@@ -44,6 +44,8 @@ class ResearchProject(models.Model):
     project_start = models.DateField("Początek projektu")                                                                                                                                                                
     project_end   = models.DateField("Koniec projektu")
     research_keywords = models.ManyToManyField(ResearchKeyword) #MANY TO MANY
+    project_description = models.TextField(_("Opis projektu badawczego"))
+    project_description_html = models.TextField(blank=True)
 
     def __unicode__(self):
             return(self.name)
