@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db import models
+from django.forms import Textarea
 import research_db.models
 
 from nested_inlines.admin import NestedModelAdmin, NestedStackedInline, NestedTabularInline
@@ -26,11 +27,15 @@ class DataframeAdmin(admin.ModelAdmin):
     exclude = ('sampling_description_html',)
 
 class ResearchProjectAdmin(NestedModelAdmin):
+    
+
     inlines = [DataframeInline]
     formfield_overrides = {
             models.TextField: {'widget':AdminPagedownWidget},
+            #models.TextField: {'widget': Textarea(attrs={'rows':30,'cols':120})},
+            
             }
-    exclude = ('sampling_description_html',)
+    exclude = ('project_description_html',)
 
 admin.site.register(research_db.models.ResearchProject, ResearchProjectAdmin)
 admin.site.register(research_db.models.Dataframe, DataframeAdmin)
