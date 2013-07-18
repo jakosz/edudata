@@ -2,6 +2,7 @@
 
 import numpy as n
 import pandas as p
+from warnings import warn
 
 '''
     [pl] Te testy przeprowadzane są dopiero *po* sprawdzeniu ich przez is_csv (przy wgrywaniu).
@@ -44,39 +45,31 @@ class cbdfit:
     # 9=>"Zmienna ma wartość spoza zakresu etykiet opisanych w codebook-u (%1)",
     # 10=>"Wiersz zawiera zmienne niezdefiniowane w codebook-u"
 
-# NAZWA
+# [pl] NAZWA; kol. 1
 def names(cb, df):
     # [pl] Czy nazwy kolumn w df są unikalne?
     if len(set(df.columns)) != len(df.columns):
-        raise CodebookDataframeIntegrityError(_('Data file column names are not unique.'))
-        ## TODO kiedy umieścisz tekst w _('') tak jak zmieniłem powyżej to jest gotowy do tłumaczenia. 
-        ## Tylko chyba jak stosujemy polskie nazwy gdzie indziej to może tu też. Albo na odwrót, bo potem
-        ## będą polsko angielskie w bazie do tłumaczenia. Możemy to tez olać, no ale.
-    
-    # [pl] Czy nazwy kolumn w cb są zgodne z wymaganiami? XXX: p. Issue #33
-    if False in [i in cb.columns for i in cbdfit().cb_names]:
-        raise CodebookDataframeIntegrityError('Codebook column names do not match required standards.')
-    
+        raise CodebookDataframeIntegrityError(_(u'Nazwy kolumn w zbiorze danych nie są unikalne.'))
     # [pl] Czy nazwy kolumn df w cb są unikalne?
-    if len(set(cb['NAZWA'])) != len(cb['NAZWA']):
-        raise CodebookDataframeIntegrityError('Data file column names specified in Codebook file are not unique.')
-    
+    if len(set(cb.iloc[:, 0])) != len(cb.iloc[:, 0]):
+        raise CodebookDataframeIntegrityError(_(u'Nazwy kolumn wyszczególnione w codebooku nie są unikalne.'))
     # [pl] Czy zbiory stringów w nagłówku df i pierwszej kolumnie cb są takie same?
-    if False in [NAZWA in df.columns for NAZWA in cb['NAZWA']]:
-        raise CodebookDataframeIntegrityError('Data file column names and variable names specified in Codebook do not match.')
-    
+    if False in [NAZWA in df.columns for NAZWA in cb.iloc[:, 0]]:
+        raise CodebookDataframeIntegrityError(_(u'Nazwy kolumn w zbiorze danych są inne niż te podane w codebooku.'))
     # XXX: ETYKIETA
-    
-    print 'codebook/dataframe names OK.'
+    print 'codebook/dataframe names checked.'
 
+# [pl] OPIS, OPIS2, SLOWA; kol. 2:4
 def descriptions(cb):
-    # OPIS
-        # Czy wszystkie komórki są wypełnione?
-    # OPIS2
-        # Czy wszystkie komórki są wypełnione?
-    # SLOWA
-        # Czy wszystkie komórki są wypełnione?
-    pass
+    # [pl] Czy wszystkie komórki są wypełnione?
+    for iCol in [1,2,3]:
+        tests = [(cb.iloc[:, iCol] == '').value_counts(), 
+                 p.isnull(cb.iloc[:, iCol]).value_counts()]
+        for t in tests:
+            if len(t) == 2 or (len(t) == 1 and t.index[0] == True):
+                w = 'Nie wszystkie komórki w kolumnie '+str(cb.columns[iCol])+' zostały wypełnione'
+                warn(w)
+    print 'codebook/dataframe descriptions checked.'
 
 def types(cb, df):
     # TYP
