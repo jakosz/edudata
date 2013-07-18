@@ -67,8 +67,7 @@ def descriptions(cb):
                  p.isnull(cb.iloc[:, iCol]).value_counts()]
         for t in tests:
             if len(t) == 2 or (len(t) == 1 and t.index[0] == True):
-                w = 'Nie wszystkie komórki w kolumnie '+str(cb.columns[iCol])+' zostały wypełnione'
-                warn(w)
+                warn(_('Nie wszystkie komórki w kolumnie '+str(cb.columns[iCol])+' zostały wypełnione'))
     print 'codebook/dataframe descriptions checked.'
 
 def types(cb, df):
