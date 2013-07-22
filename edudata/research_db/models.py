@@ -21,13 +21,17 @@ class Keyword(models.Model):
     class Meta:
         ordering = ('keyword',)
         abstract = True
-
+        verbose_name = _(u"Słowo kluczowe")
+        verbose_name_plural = _(u"Słowa kluczowe")
 class ResearchKeyword(Keyword):
-    pass
-
+    class Meta:
+        verbose_name = _(u"Słowo kluczowe badania")
+        verbose_name_plural = _(u"Słowa kluczowe badań")
 
 class DataframeKeyword(Keyword):
-    pass
+    class Meta:
+        verbose_name = _(u"Słowo kluczowe zbioru danych")
+        verbose_name_plural = _(u"Słowa kluczowe zbiorów danych") 
 
 class Team(models.Model):
     name = models.CharField(_(u"Skrót nazwy zespołu"),max_length=12)
@@ -36,21 +40,29 @@ class Team(models.Model):
 
     def __unicode__(self):
         return self.name
+    class Meta:
+        verbose_name=_(u"Zespół IBE")
+        verbose_name_plural=_(u"Zespoły IBE")
+
 
 class ResearchProject(models.Model):
     name = models.CharField(_(u"Nazwa projektu badawczego"),max_length=200)
     subcontractor = models.CharField(_(u"Podwykonawca"),max_length=200)
-    team          = models.ForeignKey(Team) ## FOREIGN KEY
+    team          = models.ForeignKey(Team,verbose_name=_(u"Zespół IBE"))## FOREIGN KEY
     project_start = models.DateField("Początek projektu")                                                                                                                                                                
     project_end   = models.DateField("Koniec projektu")
-    research_keywords = models.ManyToManyField(ResearchKeyword) #MANY TO MANY
-    project_description = models.TextField(_("Opis projektu badawczego"))
+    research_keywords = models.ManyToManyField(ResearchKeyword,verbose_name=_(u"Słowa kluczowe badania")) #MANY TO MANY
+    project_description = models.TextField(_("Abstrakt badania"), help_text=_(u"Opisane podstawowe cele badania, pytania badawcze i ewentualne wnioski. Około 200 słów."))
     project_description_html = models.TextField(blank=True)
-
+    citation = models.TextField(_(u"Wzór cytowania"),help_text=_(u"Wymagany format APA") )
+    sponsor = models.CharField(_(u"Sponsorzy badania"),help_text=_(u"Kto był sponsorem badania?"),max_length=300)
+    
     def __unicode__(self):
             return(self.name)
     class Meta:
         ordering = ('name',)
+        verbose_name = _(u"Projekt badawczy")
+        verbose_name_plural = (u"Projekty badawcze")
 
 
 class Dataframe(models.Model):
@@ -59,7 +71,7 @@ class Dataframe(models.Model):
     def __unicode__(self):
         return self.name
 
-    research_project = models.ForeignKey(ResearchProject)
+    research_project = models.ForeignKey(ResearchProject, verbose_name=_("Projekt badawczy"))
     observation_unit = models.CharField(_(u"Jednostka obserwacji"),
             help_text=_(u"kto jest bezpośrednim źródłem informacji? (np.stanowisko w instytucji, rodzice o badanych dzieciach, głowa gospodarstwa domowego, itp."),
             max_length=200) 
@@ -71,6 +83,7 @@ class Dataframe(models.Model):
             help_text=_(u"Jak była losowana próba?"))
     sampling_description_html = models.TextField(blank=True)
     sample_size = models.IntegerField(_(u"Liczebność próby"))
+    response_rate  =models.TextField(_(u"Opis response rate w badaniu"))
     respondent = models.CharField(_(u"Respondent"),
             help_text=_(u"Od kogo zbierano informacje w badaniu?"),max_length=200)
     research_methods = models.CharField(_(u"Metoda badania"),
@@ -78,6 +91,7 @@ class Dataframe(models.Model):
     collection_method = models.CharField(_(u"Techniki zbierania danych"),
             help_text=_(u"Np. CAWI, CATI, Aplikacja na tablety"),
             max_length = 200)
+
     keyword = models.ManyToManyField(DataframeKeyword) # MANY TO MANY
     df = models.FileField(_(u"Zbiór danych"),
             upload_to="data/%Y/%m/%d/dataframes",
@@ -126,6 +140,8 @@ class Dataframe(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name=_(u"Zbiór danych")
+        verbose_name_plural=_(u"Zbiory danych")
 """
 class Codebook(models.Model):
     name = models.CharField(max_length=200)
@@ -213,7 +229,7 @@ class Value(models.Model):
             self.value_string = val
 """
 class Product(models.Model):
-    product_name = models.CharField(max_length=200,
+    product_name = models.CharField(_(u"Nazwa produktu"),max_length=200,
             choices = (
                 (_(u'Narzędzie'),_(u'Narzędzie użyte do zbierania danych')),
                 (_(u'Raport merytoryczny'),_(u'Raport merytoryczny')  ),
@@ -221,10 +237,15 @@ class Product(models.Model):
                 (_(u'Inne'),_(u'Inne')),
                 )
             )
-    dataframe = models.ForeignKey(Dataframe) #FOREIGN KEY
-    product_file = models.FileField(
+    dataframe = models.ForeignKey(Dataframe,verbose_name=_(u"Zbiór danych")) #FOREIGN KEY
+    product_file = models.FileField(_(u"Plik"),
             upload_to = "data/%Y/%m/%d/products",
             max_length=200
             )
+    def __unicode__(self):
+        return self.product_name
+    class Meta:
+        verbose_name=_("Produkt badania")
+        verbose_name_plural=_(u"Produkty badania")
 
 
