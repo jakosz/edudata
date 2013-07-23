@@ -24,7 +24,7 @@ class DataframeAdmin(admin.ModelAdmin):
     formfield_overrides = {
             models.TextField: {'widget':AdminPagedownWidget},
             }
-    exclude = ('sampling_description_html','citation_html',)
+    exclude = ('sampling_description_html','response_rate_html',)
 
 class ResearchProjectAdmin(NestedModelAdmin):
     
