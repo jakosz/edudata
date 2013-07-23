@@ -55,10 +55,16 @@ class ResearchProject(models.Model):
     project_description = models.TextField(_("Abstrakt badania"), help_text=_(u"Opisane podstawowe cele badania, pytania badawcze i ewentualne wnioski. Około 200 słów."))
     project_description_html = models.TextField(blank=True)
     citation = models.TextField(_(u"Wzór cytowania"),help_text=_(u"Wymagany format APA") )
+    citation_html = models.TextField(blank=True)
     sponsor = models.CharField(_(u"Sponsorzy badania"),help_text=_(u"Kto był sponsorem badania?"),max_length=300)
     
     def __unicode__(self):
             return(self.name)
+
+    def save(self, *args, **kwargs):
+        self.project_description_html = markdown.markdown(self.sampling_description)
+        self.citation_html = markdown.markdown(self.sampling_citation)
+        super(ResearchProject, self).save(*args, **kwargs)
     class Meta:
         ordering = ('name',)
         verbose_name = _(u"Projekt badawczy")
@@ -83,7 +89,8 @@ class Dataframe(models.Model):
             help_text=_(u"Jak była losowana próba?"))
     sampling_description_html = models.TextField(blank=True)
     sample_size = models.IntegerField(_(u"Liczebność próby"))
-    response_rate  =models.TextField(_(u"Opis response rate w badaniu"))
+    response_rate = models.TextField(_(u"Opis response rate w badaniu"))
+    response_rate_html = models.TextField(blank=True)
     respondent = models.CharField(_(u"Respondent"),
             help_text=_(u"Od kogo zbierano informacje w badaniu?"),max_length=200)
     research_methods = models.CharField(_(u"Metoda badania"),
@@ -129,6 +136,7 @@ class Dataframe(models.Model):
 
     def save(self, *args, **kwargs):
         self.sampling_description_html = markdown.markdown(self.sampling_description)
+        self.response_rate_html = markdown.markdown(self.response_rate)
         super(Dataframe, self).save(*args, **kwargs)
         self.process_dataframe()
     def get_data(self): # get pandas dataframe
