@@ -63,7 +63,7 @@ class ResearchProject(models.Model):
 
     def save(self, *args, **kwargs):
         self.project_description_html = markdown.markdown(self.project_description)
-        self.citation_html = markdown.markdown(self.sampling_citation)
+        self.citation_html = markdown.markdown(self.citation)
         super(ResearchProject, self).save(*args, **kwargs)
     class Meta:
         ordering = ('name',)
