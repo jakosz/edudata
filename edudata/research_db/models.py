@@ -62,7 +62,7 @@ class ResearchProject(models.Model):
             return(self.name)
 
     def save(self, *args, **kwargs):
-        self.project_description_html = markdown.markdown(self.sampling_description)
+        self.project_description_html = markdown.markdown(self.project_description)
         self.citation_html = markdown.markdown(self.sampling_citation)
         super(ResearchProject, self).save(*args, **kwargs)
     class Meta:
