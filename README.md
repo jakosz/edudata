@@ -9,7 +9,9 @@ This application requires installation of the following Python packages:
 
 * chardet (https://pypi.python.org/pypi/chardet)
 * django-pagedown (https://pypi.python.org/pypi/django-pagedown)
-* markdown (https://pypi.python.org/pypi/Markdown)
+* markdown (https://pypi.python.org/pypi/Markdown-)
 * nested\_inlines (https://github.com/Soaa-/django-nested-inlines)
+* numpy (http://www.numpy.org/)
+* pandas (http://pandas.pydata.org/)
 * pymongo (https://pypi.python.org/pypi/pymongo/)
 * python-magic (https://github.com/ahupp/python-magic)
