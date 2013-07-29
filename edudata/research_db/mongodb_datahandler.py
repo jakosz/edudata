@@ -55,12 +55,12 @@ class MongoHandler:
 
     def get_dataframe_and_info(self,df_name):
         cursor = self.db.dataframes.find({'df_name':df_name})
-        df = cursor.next()
+        df  = [ column for column in cursor ]
         dfdict = dict()
         rownames = []
         info = dict()
         # TU MUSI BYĆ SORTOWANIE po kluczu i to kluczu INTEGER!!
-        for nr,column in enumerate(df['columns']): # type(df['columns']) == type([])
+        for nr,column in enumerate(df): # type(df['columns']) == type([])
             # first, get rownames
             if nr == 0:
                 rownames = column['data'].keys()
@@ -82,7 +82,7 @@ class MongoHandler:
             elif column['type'] == u'liczba rzeczywista': 
                 psDf[column['name']] = psDf[column['name']].astype(float)
             else:
-                pass
+                psDf[column['name']] = psDf[column['name']].astype(str)
         # return dictionary for views.py
         return {'info':info,'df': psDf}
 
