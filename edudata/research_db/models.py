@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from helpers import is_csv
 from mongodb_datahandler import MongoHandler
+from time import time
 import markdown
 """
  This is a class representing Research project - an abstract concept of a research that consists of different datasets, materials used to conduct research and so on
@@ -137,8 +138,12 @@ class Dataframe(models.Model):
     def save(self, *args, **kwargs):
         self.sampling_description_html = markdown.markdown(self.sampling_description)
         self.response_rate_html = markdown.markdown(self.response_rate)
+	#t_start  = time()
         super(Dataframe, self).save(*args, **kwargs)
+	#t_ms = time()
         self.process_dataframe()
+	t_end = time()
+	#print "\nTIME: Model save {}, Processing {}".format(t_ms - t_start, t_end - t_ms)
     def get_data(self): # get pandas dataframe
         mongodb = MongoHandler()
         return mongodb.get_dataframe_and_info(self.name)
