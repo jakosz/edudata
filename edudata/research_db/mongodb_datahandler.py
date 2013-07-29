@@ -5,19 +5,19 @@ import json
 from pandas import DataFrame as psDataFrame
 from pymongo import MongoClient
 
+
+
 class MongoHandler:
 
     def __init__(self):
         self.client = MongoClient('localhost', 27017)
         self.db = self.client.research_data
 
-    def mongodb_prepare(self,cb_reader, pandas_df, df_name):
-        data = dict()
-        data['df_name'] = df_name
-        data['columns'] = []
+    def mongodb_insert_columns(self,cb_reader, pandas_df, df_name):
+        dataframes = self.db.dataframes
         for nr,row in enumerate(cb_reader):
             column = dict()
-            
+            column['df_name'] = df_name
             #data[df_name] = 
             #data[var_name] = dict()
             #data[var_name]['df_name']=df_name        
@@ -31,13 +31,13 @@ class MongoHandler:
             try:
                 var_data = pandas_df[ column['name'] ].to_dict()
                 
-                column['data'] = dict((str(key), value) for (key, value) in var_data.items()) 
+                column['data'] = dict((unicode(key), value) for (key, value) in var_data.items()) 
             except KeyError:
                 e= "Failed to locate '{}' var in {} df columns ".format(column['name'], pandas_df.columns)
                 raise KeyError, e
-            data['columns'].append(column)
+            dataframes.insert(column)
+            #data['columns'].append(column)
             
-        return data
 
     def process_data(self, df_name, codebook, df):
         #codebook = open("codebook.csv", "r")
@@ -46,12 +46,11 @@ class MongoHandler:
         cb_reader.next() ## skip the header of the codebook!
         data_reader =  csv.reader(df,delimiter=";",quotechar='"')
         data_header = data_reader.next() ## get header
-        df_rows = [row for row in data_reader]                 
+        df_rows = [row for row in data_reader] 
         pandas_df = psDataFrame(df_rows,columns=data_header)
-        insert_query  =self.mongodb_prepare(cb_reader,pandas_df, df_name)
-        dataframes = self.db.dataframes
-        status = dataframes.insert(insert_query)
-        return status
+        self.mongodb_insert_columns(cb_reader,pandas_df, df_name)
+        #dataframes = self.db.dataframes
+        #status = dataframes.insert(insert_query)
 
 
     def get_dataframe_and_info(self,df_name):
