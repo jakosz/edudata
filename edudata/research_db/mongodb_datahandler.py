@@ -4,7 +4,7 @@ import StringIO
 import json
 from pandas import DataFrame as psDataFrame
 from pymongo import MongoClient
-
+from cython_edudata_helpers import int2str
 
 
 class MongoHandler:
@@ -14,14 +14,16 @@ class MongoHandler:
         self.db = self.client.research_data
 
     def mongodb_insert_columns(self,cb_reader, pandas_df, df_name):
+        """
+        Insert columns to MongoDB in a loop ( TODO: parallel insert should be easy)
+        Profiling showed that conversion to Unicode adds a lot of complexity in :
+        dict((key,value) for (key, value) in var_data.items()) slowing down from 0.39 sec
+        to 10 seconds for 4000 column file!
+        """
         dataframes = self.db.dataframes
         for nr,row in enumerate(cb_reader):
             column = dict()
             column['df_name'] = df_name
-            #data[df_name] = 
-            #data[var_name] = dict()
-            #data[var_name]['df_name']=df_name        
-            #print row
             column['name'],column['desc_short'], column['desc_long'],\
                 column['keywords'], column['type'],\
                 column['scale'], column['value_len'],\
@@ -31,7 +33,7 @@ class MongoHandler:
             try:
                 var_data = pandas_df[ column['name'] ].to_dict()
                 
-                column['data'] = dict((unicode(key), value) for (key, value) in var_data.items()) 
+                column['data'] = dict((int2str(key), value) for (key, value) in var_data.items()) 
             except KeyError:
                 e= "Failed to locate '{}' var in {} df columns ".format(column['name'], pandas_df.columns)
                 raise KeyError, e
@@ -40,8 +42,12 @@ class MongoHandler:
             
 
     def process_data(self, df_name, codebook, df):
-        #codebook = open("codebook.csv", "r")
-        #df = open ("df.csv","r")
+        """
+        get codebook and dataframe, convert df into pandas object and 
+        insert it into mongoDB. This can be much improved :
+        TODO find a way to chop df into columns w/o pandas and make a json object
+        directly keeping row numbers.
+        """
         cb_reader = csv.reader(codebook, delimiter = ';', quotechar = '"')
         cb_reader.next() ## skip the header of the codebook!
         data_reader =  csv.reader(df,delimiter=";",quotechar='"')
@@ -49,8 +55,6 @@ class MongoHandler:
         df_rows = [row for row in data_reader] 
         pandas_df = psDataFrame(df_rows,columns=data_header)
         self.mongodb_insert_columns(cb_reader,pandas_df, df_name)
-        #dataframes = self.db.dataframes
-        #status = dataframes.insert(insert_query)
 
 
     def get_dataframe_and_info(self,df_name):
