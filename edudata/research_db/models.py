@@ -50,6 +50,9 @@ class ResearchProject(models.Model):
     name = models.CharField(_(u"Nazwa projektu badawczego"),max_length=200)
     subcontractor = models.CharField(_(u"Podwykonawca"),max_length=200)
     team          = models.ForeignKey(Team,verbose_name=_(u"Zespół IBE"))## FOREIGN KEY
+    person = models.CharField(_(u"Główny badacz"),
+            help_text=_(u"Badacz odpowiedzialny za projekt w czasie zbierania danych"), 
+            max_length=300)
     project_start = models.DateField("Początek projektu")                                                                                                                                                                
     project_end   = models.DateField("Koniec projektu")
     research_keywords = models.ManyToManyField(ResearchKeyword,verbose_name=_(u"Słowa kluczowe badania")) #MANY TO MANY
@@ -86,11 +89,13 @@ class Dataframe(models.Model):
     population = models.CharField(_(u"Populacja badana"),
             help_text=_(u"Kto/co stanowiło populacje? Uczniowie, studenci, nauczyciele, gospodarstwa domowe, jednostki?"),
             max_length=400)
-    sampling_description = models.TextField(_(u"Opis schematu doboru próby"), 
-            help_text=_(u"Jak była losowana próba?"))
+    sampling_description = models.TextField(_(u"Opis schematu doboru próby"),
+            help_text=_(u"1. Czy nalezy stosowac wagi i jeśli tak, to jakie.\
+            2. Dla badań podłużnych, opis 'retencji' próby: tzw. 'wykruszania' panelu"))
     sampling_description_html = models.TextField(blank=True)
     sample_size = models.IntegerField(_(u"Liczebność próby"))
-    response_rate = models.TextField(_(u"Opis response rate w badaniu"))
+    response_rate = models.TextField(_(u"Opis response rate w badaniu"), 
+            help_text=_(u"Dodatkowo: czy były stosowane próby rezerwowe?"))
     response_rate_html = models.TextField(blank=True)
     respondent = models.CharField(_(u"Respondent"),
             help_text=_(u"Od kogo zbierano informacje w badaniu?"),max_length=200)
@@ -99,7 +104,7 @@ class Dataframe(models.Model):
     collection_method = models.CharField(_(u"Techniki zbierania danych"),
             help_text=_(u"Np. CAWI, CATI, Aplikacja na tablety"),
             max_length = 200)
-
+    
     keyword = models.ManyToManyField(DataframeKeyword) # MANY TO MANY
     df = models.FileField(_(u"Zbiór danych"),
             upload_to="data/%Y/%m/%d/dataframes",
