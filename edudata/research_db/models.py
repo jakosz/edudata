@@ -4,7 +4,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
-from helpers import is_csv
+from helpers.is_csv import is_csv
 from mongodb_datahandler import MongoHandler
 from time import time
 import markdown
@@ -74,7 +74,7 @@ class ResearchProject(models.Model):
 
 class Dataframe(models.Model):
     name = models.CharField(_(u"Nazwa zbioru danych"),help_text=_(u"Nazwa musi być znacząca - dobrze opisująca zbiór danych"),
-            max_length=200)    
+            max_length=200, unique=True)    
     def __unicode__(self):
         return self.name
 
@@ -104,7 +104,7 @@ class Dataframe(models.Model):
     df = models.FileField(_(u"Zbiór danych"),
             upload_to="data/%Y/%m/%d/dataframes",
             max_length=200,
-            #validators=[is_csv]
+           # validators=[is_csv]
     )
 
     codebook_file = models.FileField(_(u"Codebook"),
