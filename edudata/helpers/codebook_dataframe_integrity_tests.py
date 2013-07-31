@@ -32,6 +32,10 @@ class CbdfitMethodError(CodebookDataframeIntegrityError):
 
 def t2f(x):
     '''text to float'''
+    """
+    TODO: [pl] Zmienie to na funkcje C dla poprawy wydajnosci [/pl]
+    """
+    
     try:
         if ',' in x:
             x = x.replace(',', '.')
