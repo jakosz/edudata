@@ -5,7 +5,8 @@ import json
 from pandas import DataFrame as psDataFrame
 from pymongo import MongoClient
 from cython_edudata_helpers import int2str
-
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
 
 class MongoHandler:
 
@@ -40,6 +41,13 @@ class MongoHandler:
             dataframes.insert(column)
             #data['columns'].append(column)
             
+    def is_dfname_unique(self, df_name):
+        """
+        Checks if dataframe of this name already exists in MongoDB
+        """
+        result = self.db.command({'count': 'dataframes','query': { 'df_name' : 'debug3'  } })
+        if result[u'n'] > 0:
+            raise ValidationError, _(u"Zbiór danych o takiej nazwie już istnieje")
 
     def process_data(self, df_name, codebook, df):
         """
@@ -48,6 +56,9 @@ class MongoHandler:
         TODO find a way to chop df into columns w/o pandas and make a json object
         directly keeping row numbers.
         """
+        # check if df_name already exists. If so, throw a ValidationError
+        self.is_dfname_unique(df_name)
+
         cb_reader = csv.reader(codebook, delimiter = ';', quotechar = '"')
         cb_reader.next() ## skip the header of the codebook!
         data_reader =  csv.reader(df,delimiter=";",quotechar='"')
