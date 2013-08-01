@@ -16,6 +16,7 @@ do widokow:
 	* detail - szczegoly na temat projektu badawczego
 """
 urlpatterns = patterns('',
+        url(r'^$', ResearchProjectIndex.as_view(),name="list"),
 	url(r'^project/$',
 		ResearchProjectIndex.as_view(), name= "list"),
 	url(r'^project/(?P<pk>\d+)/$', ResearchProjectDetail.as_view(), name = "detail"),
