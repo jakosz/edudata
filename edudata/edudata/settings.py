@@ -51,6 +51,10 @@ MEDIA_ROOT = os.path.split(PROJECT_ROOT)[0]+'/media/'
 #MEDIA_URL = 'http://127.0.0.1:8765/'
 MEDIA_URL ='/media/'
 
+
+
+ADMIN_MEDIA_PREFIX = '/static/admin/'
+
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
@@ -119,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
+    'djangocms_admin_style',
     'django.contrib.admin',
     #'django.contrib.auth',
     # Uncomment the next line to enable admin documentation:
@@ -126,7 +131,8 @@ INSTALLED_APPS = (
     #'polls'
     'pagedown',
     'research_db',
-    'helpers', 
+    'helpers',
+    'haystack'
 )
 
 # A sample logging configuration. The only tangible logging
