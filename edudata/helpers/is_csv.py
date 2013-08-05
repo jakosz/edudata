@@ -46,7 +46,7 @@ def dFile(ff, read = None):
     '''
     fo = File(ff)
     fo.open()
-    return fo.read(read)
+    return fo.read()
 
 def paste_collapse(List):
     '''
@@ -136,7 +136,7 @@ def is_table(csv2list, sep = ';', quote = '"'):
     Checks if a number of columns is the same in all rows.
     '''
     if len(set(map(len, csv2list))) != 1:
-        raise ValidationError, _(err_msg.format(non_tab.format(str(rowCounter+1))))
+        raise ValidationError, _(err_msg.format(non_tab))
     print 'is_table: True'
 
 def is_header_ok(csv2list, sep, quote):
