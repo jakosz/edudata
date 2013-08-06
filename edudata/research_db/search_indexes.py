@@ -1,6 +1,5 @@
-import datetime
 from haystack import indexes
-from models import Dataframe, ResearchProject, ResearchKeyword
+from models import ResearchProject, ResearchKeyword, Codebook
 
 
 class ResearchProjectIndex(indexes.SearchIndex, indexes.Indexable):
@@ -11,7 +10,6 @@ class ResearchProjectIndex(indexes.SearchIndex, indexes.Indexable):
 
     def index_queryset(self, using=None):
         """Used when the entire index for model is updated."""
-        #return self.get_model().objects.filter(pub_date__lte=datetime.datetime.now())
         return self.get_model().objects.all()
 
 class ResearchKeywordIndex(indexes.SearchIndex, indexes.Indexable):
@@ -20,3 +18,18 @@ class ResearchKeywordIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return ResearchKeyword
+
+    def index_queryset(self, using=None):
+        """Used when the entire index for model is updated."""
+        return self.get_model().objects.all()
+
+class CodebookIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template = True)
+    name = indexes.CharField(model_attr="name")
+    desc_short = indexes.CharField(model_attr="desc_short")
+    desc_long = indexes.CharField(model_attr="desc_long")
+    keyword = indexes.CharField(model_attr="keywords")
+
+    def get_model(self):
+        return Codebook
+

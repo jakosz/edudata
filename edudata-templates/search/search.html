@@ -38,6 +38,21 @@
                 <a href="{{ result.object.get_absolute_url }}">
                 {{ result.object }}
                 {% endif %}
+                
+                {% if result.object.class_name == 'Codebook' %}
+                <strong>{{ result.object }}</strong>: zmienna występuje w zbiorze danych<strong> {{ result.object.dataframe.name }}</strong> <a href="{{ result.object.dataframe.df }}">(pobierz)</a>,
+                części projektu badawczego 
+                <a href="{{ result.object.dataframe.research_project.get_absolute_url }}"
+                    <strong> {{ result.object.dataframe.research_project.name }} </strong>
+                </a>
+                <p> Krótki opis zmiennej: <em>{{ result.object.desc_short }}</em></p>
+                <p> Pełny opis zmiennej: <em> {{ result.object.desc_long }}</em></p>
+                <p> Słowa kluczowe: <em> {{result.object.keywords }} </em>
+                <p> Skala: {{ result.object.scale }} </p>
+                <p> Wartości - od {{ result.object.min_value }} do {{ result.object.max_value  }} </p>
+                <p> Etykiety : {{ result.object.value_labels }} </p>
+                {% endif %}
+                
                 </p>
             </div>
             </li>

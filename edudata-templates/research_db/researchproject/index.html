@@ -14,7 +14,7 @@
 	</thead>
 	{% for researchproject in researchproject_list %}
 	<tr>	
-        <td><a href="{% url 'detail' researchproject.id  %}">{{ researchproject.name}}</a> </td>
+        <td><a href="{% url 'researchproject.detail' researchproject.id  %}">{{ researchproject.name}}</a> </td>
 		<td>{{ researchproject.subcontractor }} </td>
 		<td>{{ researchproject.team }} </td>
 	</tr>

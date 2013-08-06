@@ -9,7 +9,7 @@ from mongodb_datahandler import MongoHandler
 from time import time
 import markdown
 from django.core.urlresolvers import reverse
-
+import csv
 
 class Keyword(models.Model):
     keyword = models.CharField(_(u"Słowo kluczowe"),max_length=100)
@@ -155,7 +155,27 @@ class Dataframe(models.Model):
         
         mongodb = MongoHandler()
         mongodb.process_data(self.name, self.codebook_file, self.df)
+        self.save_codebook(self.codebook_file)
         #self.save_df()
+    def save_codebook(self, codebook_file):
+        bulk_list = []
+        cb_reader = csv.reader(codebook_file, delimiter = ';', quotechar = '"')
+        cb_reader.next()
+        for nr,row in enumerate(cb_reader):
+            codebook_row = dict()
+            codebook_row['name'],codebook_row['desc_short'], codebook_row['desc_long'],\
+                          codebook_row['keywords'], codebook_row['type'],\
+                          codebook_row['scale'], codebook_row['value_len'],\
+                          codebook_row['precision'], codebook_row['min_value'],\
+                          codebook_row['max_value'], codebook_row['labels'],codebook_row['condition'] = row
+
+            codebook_row = { (key):(None if val == '' else val)  for key,val in codebook_row.iteritems() } 
+            codebook_row['dataframe'] = self
+            cb_obj = Codebook(**codebook_row)
+            bulk_list.append(cb_obj)
+
+        Codebook.objects.bulk_create(bulk_list)
+
 
     def save(self, *args, **kwargs):
         self.sampling_description_html = markdown.markdown(self.sampling_description)
@@ -164,7 +184,6 @@ class Dataframe(models.Model):
         super(Dataframe, self).save(*args, **kwargs)
 	#t_ms = time()
         self.process_dataframe()
-	t_end = time()
 	#print "\nTIME: Model save {}, Processing {}".format(t_ms - t_start, t_end - t_ms)
     def get_data(self): # get pandas dataframe
         mongodb = MongoHandler()
@@ -177,23 +196,15 @@ class Dataframe(models.Model):
         ordering = ('name',)
         verbose_name=_(u"Zbiór danych")
         verbose_name_plural=_(u"Zbiory danych")
-"""
+
 class Codebook(models.Model):
     name = models.CharField(max_length=200)
     dataframe = models.ForeignKey(Dataframe)
-    desc_short = models.CharField(max_length=200)
-    desc_long = models.TextField(max_length=200)
-    keywords = models.CharField(max_length=200)
-    type = models.CharField(max_length=200, choices = \
-                (
-                    ('int',_(u'liczba całkowita')),
-                    ('float', _(u'liczba rzeczywista')),
-                    ('string', _(u'tekst')),
-                    ('date',_(u'data')),
-                    ('TERC',_(u'TERC')),
-                    ('weight',_(u'waga'))
-                )
-            )
+    desc_short = models.TextField()
+    desc_long = models.TextField()
+    keywords = models.TextField()
+    type = models.CharField(max_length=200)
+
     def get_type(self):
         if self.type.decode('utf-8') == u'liczba całkowita':
             return "int"
@@ -202,7 +213,7 @@ class Codebook(models.Model):
         else:
             return "string"
 
-    scale = models.CharField(max_length = 200, choices = (
+    scale = models.CharField(max_length = 200, null=True, blank=True,choices = (
                 ('dichotomous',_(u'dychotomiczna')),
                 ('nominal',_(u'nominalna')),
                 ('ordinal',_(u'porządkowa')),
@@ -215,17 +226,12 @@ class Codebook(models.Model):
     min_value = models.FloatField(null=True,blank=True)
     max_value = models.FloatField(null=True,blank=True)
     labels = models.TextField(null=True,blank=True)
-    condition = models.CharField(null=True,blank=True,max_length=300)
+    condition = models.TextField(null=True,blank=True)
     def __unicode__(self):
         return self.name
-    def __str__(self):
-        return ",".join([str(x) for x in ["Codebook: ", 'name',self.name, 'short desc', self.desc_short,\
-                'long desc',self.desc_long, 'keywords', self.keywords, \
-                '\ntype:',self.type,'scale', self.scale, 'value len', \
-                self.value_len, '\tprecision:', self.precision,\
-                'min:',self.min_value, '\tmax: ', self.max_value, \
-                'labels: ',self.labels, 'condition: ',self.condition]])
-
+    def class_name(self):
+        return self.__class__.__name__
+"""
 class Value(models.Model):
     codebook =  models.ForeignKey(Codebook) ## in fact, index means a codebook\
                                             # column (row in codebook is a \

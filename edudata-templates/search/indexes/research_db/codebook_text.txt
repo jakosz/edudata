@@ -1,0 +1,5 @@
+{{ object.name }}
+{{ object.desc_short }}
+{{ object.desc_long }}
+{{ object.keyword }}
+{{ object.dataframe }} 
