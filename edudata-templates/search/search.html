@@ -16,18 +16,35 @@
 
         {% if query %}
             <h3>Wyniki wyszukiwania</h3>
-
-            {% for result in page.object_list %}
-            
+            <ol>
+                {% for result in page.object_list %}
+            <li>
+            <div class="well well-small">
             <p>
-            <a href="{{ result.object.get_absolute_url }}">
-                {{ result.object.id }}
             </a>
+            {% if result.object.class_name == 'ResearchKeyword' %}
+                Słowo kluczowe
+                <span class="label label-success">
+                {{ result.object }}</span> związane jest z badaniami:
+                <ul>
+                {% for researchproject  in result.object.researchproject_set.all %}
+                <li> <a href="{{ researchproject.get_absolute_url }}"> {{ researchproject }} <a/></li>
+                {% endfor %}
+                </ul>
+                {% endif %}
+    
+                {% if result.object.class_name == 'ResearchProject' %}
+                <span class="label label-info">Projekt badawczy</span>
+                <a href="{{ result.object.get_absolute_url }}">
+                {{ result.object }}
+                {% endif %}
                 </p>
+            </div>
+            </li>
             {% empty %}
-                <p>Niczego nie znaleziono.</p>
+            <p>Niczego nie znaleziono.</p>
             {% endfor %}
-
+            </ol>
             {% if page.has_previous or page.has_next %}
                 <div>
                     {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Poprzednie{% if page.has_previous %}</a>{% endif %}
