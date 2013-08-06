@@ -33,7 +33,6 @@ templates/*
 *.py[cod]
 
 # C extensions
-*.so
 
 # Packages
 *.egg
