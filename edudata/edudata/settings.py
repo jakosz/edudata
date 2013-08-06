@@ -11,6 +11,14 @@ ADMINS = (
     ('Mikolaj Hnatiuk', 'mikolaj.hnatiuk@gmail.com'),
 )
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr'
+        # ...or for multicore...
+        # 'URL': 'http://127.0.0.1:8983/solr/mysite',
+    },
+}
 MANAGERS = ADMINS
 
 
@@ -129,11 +137,14 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     #'polls'
+    'haystack',
     'pagedown',
     'research_db',
-    'helpers',
-    'haystack'
+    'helpers'
 )
+
+## HAYSTACK CONF
+##
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

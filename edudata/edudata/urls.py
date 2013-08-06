@@ -16,6 +16,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
         url(r'^$', include('research_db.urls')),
+        url(r'^search/', include('haystack.urls')),
 	#url(r'^polls/', include('polls.urls')),
 	url(r'^admin/', include(admin.site.urls)),
         url(r'^research_db/',include('research_db.urls'))

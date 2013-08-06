@@ -1,0 +1,6 @@
+{{ object.name }}
+{{ object.subcontractor }}
+{{ object.team }}
+{{ object.project_description }}
+{{ object.sponsor }}
+{{ object.person }}

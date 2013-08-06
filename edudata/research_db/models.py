@@ -8,10 +8,7 @@ from helpers.is_csv import is_csv
 from mongodb_datahandler import MongoHandler
 from time import time
 import markdown
-"""
- This is a class representing Research project - an abstract concept of a research that consists of different datasets, materials used to conduct research and so on
-"""
-
+from django.core.urlresolvers import reverse
 
 
 class Keyword(models.Model):
@@ -25,11 +22,16 @@ class Keyword(models.Model):
         verbose_name = _(u"Słowo kluczowe")
         verbose_name_plural = _(u"Słowa kluczowe")
 class ResearchKeyword(Keyword):
+    def get_absolute_url(self):
+        #FIX
+        return reverse('researchkeyword.views.details', args=[str(self.id)])
     class Meta:
         verbose_name = _(u"Słowo kluczowe badania")
         verbose_name_plural = _(u"Słowa kluczowe badań")
 
 class DataframeKeyword(Keyword):
+    def get_absolute_url(self):
+        return reverse('researchkeyword.views.details', args=[str(self.id)])
     class Meta:
         verbose_name = _(u"Słowo kluczowe zbioru danych")
         verbose_name_plural = _(u"Słowa kluczowe zbiorów danych") 
@@ -64,6 +66,11 @@ class ResearchProject(models.Model):
     
     def __unicode__(self):
             return(self.name)
+
+    def get_absolute_url(self):
+        print "WHAT"
+        #eturn "project/detail/%i" % self.id
+        return reverse('researchproject.detail', args=[str(self.id)])
 
     def save(self, *args, **kwargs):
         self.project_description_html = markdown.markdown(self.project_description)

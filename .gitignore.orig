@@ -1,5 +1,4 @@
 edudata/edudata/local_settings.py 
-edudata/edudata/settings.py
 *.pyc
 *.mm
 ibe_plots/*  
@@ -15,9 +14,6 @@ templates/*
 *.rar
 *.tar
 *.zip
-
-##### DATA
-*.csv
 
 # Compiled source #
 ###################
@@ -35,6 +31,8 @@ templates/*
 
 *.py[cod]
 
+# C extensions
+*.so
 
 # Packages
 *.egg

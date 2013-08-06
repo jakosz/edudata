@@ -19,7 +19,7 @@ urlpatterns = patterns('',
         url(r'^$', ResearchProjectIndex.as_view(),name="list"),
 	url(r'^project/$',
 		ResearchProjectIndex.as_view(), name= "list"),
-	url(r'^project/(?P<pk>\d+)/$', ResearchProjectDetail.as_view(), name = "detail"),
+	url(r'^project/(?P<pk>\d+)/$', ResearchProjectDetail.as_view(), name = "researchproject.detail"),
         url(r'^dataframe_basicinfo/(?P<pk>\d+)/$', dataframe_basicinfo, name="dataframe_basicinfo")
 )
 
