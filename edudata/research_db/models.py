@@ -13,7 +13,6 @@ from django.core.urlresolvers import reverse
 
 class Keyword(models.Model):
     keyword = models.CharField(_(u"Słowo kluczowe"),max_length=100)
-    
     def __unicode__(self):
         return self.keyword
     class Meta:
@@ -21,7 +20,10 @@ class Keyword(models.Model):
         abstract = True
         verbose_name = _(u"Słowo kluczowe")
         verbose_name_plural = _(u"Słowa kluczowe")
+
 class ResearchKeyword(Keyword):
+    def class_name(self):
+        return self.__class__.__name__
     def get_absolute_url(self):
         #FIX
         return reverse('researchkeyword.views.details', args=[str(self.id)])
@@ -30,6 +32,9 @@ class ResearchKeyword(Keyword):
         verbose_name_plural = _(u"Słowa kluczowe badań")
 
 class DataframeKeyword(Keyword):
+    def class_name(self):
+        return self.__class__.__name__
+
     def get_absolute_url(self):
         return reverse('researchkeyword.views.details', args=[str(self.id)])
     class Meta:
@@ -65,7 +70,10 @@ class ResearchProject(models.Model):
     sponsor = models.CharField(_(u"Sponsorzy badania"),help_text=_(u"Kto był sponsorem badania?"),max_length=300)
     
     def __unicode__(self):
-            return(self.name)
+        return(self.name)
+
+    def class_name(self):
+        return self.__class__.__name__
 
     def get_absolute_url(self):
         print "WHAT"
@@ -88,6 +96,8 @@ class Dataframe(models.Model):
     def __unicode__(self):
         return self.name
 
+    def class_name(self):
+        return self.__class__
     research_project = models.ForeignKey(ResearchProject, verbose_name=_("Projekt badawczy"))
     observation_unit = models.CharField(_(u"Jednostka obserwacji"),
             help_text=_(u"kto jest bezpośrednim źródłem informacji? (np.stanowisko w instytucji, rodzice o badanych dzieciach, głowa gospodarstwa domowego, itp."),
