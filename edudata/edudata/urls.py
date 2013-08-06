@@ -16,7 +16,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
         url(r'^$', include('research_db.urls')),
-	#url(r'^polls/', include('polls.urls')),
 	url(r'^admin/', include(admin.site.urls)),
         url(r'^research_db/',include('research_db.urls'))
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
