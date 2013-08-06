@@ -1,4 +1,5 @@
 edudata/edudata/local_settings.py 
+edudata/edudata/settings.py
 *.pyc
 *.mm
 ibe_plots/*  
