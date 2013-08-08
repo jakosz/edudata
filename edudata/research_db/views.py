@@ -12,7 +12,7 @@ class ResearchProjectIndex(generic.ListView):
     template_name = 'research_db/researchproject/index.html'
     context_object_name = 'researchproject_list'
     def get_queryset(self):
-        """Return the last five published research projects."""
+        """Return all research projects."""
         print ResearchProject.objects.all()
         return ResearchProject.objects.all()
 
