@@ -10,6 +10,8 @@ from time import time
 import markdown
 from django.core.urlresolvers import reverse
 import csv
+from edudata_helpers import is_csv
+
 
 class Keyword(models.Model):
     keyword = models.CharField(_(u"Słowo kluczowe"),max_length=100)
@@ -62,7 +64,7 @@ class ResearchProject(models.Model):
             max_length=300)
     project_start = models.DateField("Początek projektu")                                                                                                                                                                
     project_end   = models.DateField("Koniec projektu")
-    research_keywords = models.ManyToManyField(ResearchKeyword,verbose_name=_(u"Słowa kluczowe badania")) #MANY TO MANY
+    research_keywords = models.ManyToManyField(ResearchKeyword,verbose_name=_(u"Słowa kluczowe badania"), null=True,blank=True) #MANY TO MANY
     project_description = models.TextField(_("Abstrakt badania"), help_text=_(u"Opisane podstawowe cele badania, pytania badawcze i ewentualne wnioski. Około 200 słów."))
     project_description_html = models.TextField(blank=True)
     citation = models.TextField(_(u"Wzór cytowania"),help_text=_(u"Wymagany format APA") )
@@ -83,6 +85,7 @@ class ResearchProject(models.Model):
     def save(self, *args, **kwargs):
         self.project_description_html = markdown.markdown(self.project_description)
         self.citation_html = markdown.markdown(self.citation)
+	
         super(ResearchProject, self).save(*args, **kwargs)
     class Meta:
         ordering = ('name',)
@@ -114,15 +117,22 @@ class Dataframe(models.Model):
     response_rate = models.TextField(_(u"Opis response rate w badaniu"), 
             help_text=_(u"Dodatkowo: czy były stosowane próby rezerwowe?"))
     response_rate_html = models.TextField(blank=True)
+
     respondent = models.CharField(_(u"Respondent"),
             help_text=_(u"Od kogo zbierano informacje w badaniu?"),max_length=200)
-    research_methods = models.CharField(_(u"Metoda badania"),
-            help_text=_(u"__DO UZUPEŁNIENIA OPIS__"),max_length = 300)
+
+    research_methods = models.TextField(_(u"Metoda badania"),
+            help_text=_(u"__DO UZUPEŁNIENIA OPIS__"))
+    research_methods_html = models.TextField(blank=True)
+
     collection_method = models.CharField(_(u"Techniki zbierania danych"),
             help_text=_(u"Np. CAWI, CATI, Aplikacja na tablety"),
             max_length = 200)
     
-    keyword = models.ManyToManyField(DataframeKeyword) # MANY TO MANY
+    data_collection_start = models.DateField(_(u"Początek zbierania danych"))
+    data_collection_end = models.DateField(_(u"Koniec zbierania danych"))
+
+    keyword = models.ManyToManyField(DataframeKeyword,null=True,blank=True) # MANY TO MANY
     df = models.FileField(_(u"Zbiór danych"),
             upload_to="data/%Y/%m/%d/dataframes",
             max_length=200,
@@ -169,7 +179,9 @@ class Dataframe(models.Model):
                           codebook_row['precision'], codebook_row['min_value'],\
                           codebook_row['max_value'], codebook_row['labels'],codebook_row['condition'] = row
 
-            codebook_row = { (key):(None if val == '' else val)  for key,val in codebook_row.iteritems() } 
+            # Works only in python 2.7+ ... : codebook_row = { (key):(None if val == '' else val)  for key,val in codebook_row.iteritems() } 
+	    #2.6 compatible:
+	    codebook_row = dict((key, value if value != '' else None) for (key, value) in codebook_row.iteritems())
             codebook_row['dataframe'] = self
             cb_obj = Codebook(**codebook_row)
             bulk_list.append(cb_obj)
@@ -180,6 +192,7 @@ class Dataframe(models.Model):
     def save(self, *args, **kwargs):
         self.sampling_description_html = markdown.markdown(self.sampling_description)
         self.response_rate_html = markdown.markdown(self.response_rate)
+	self.research_methods_html = markdown.markdown(self.research_methods)
 	#t_start  = time()
         super(Dataframe, self).save(*args, **kwargs)
 	#t_ms = time()
@@ -202,7 +215,7 @@ class Codebook(models.Model):
     dataframe = models.ForeignKey(Dataframe)
     desc_short = models.TextField()
     desc_long = models.TextField()
-    keywords = models.TextField()
+    keywords = models.TextField(blank=True,null=True)
     type = models.CharField(max_length=200)
 
     def get_type(self):
@@ -223,8 +236,8 @@ class Codebook(models.Model):
             )
     value_len = models.IntegerField(null=True,blank=True) # value length
     precision = models.IntegerField(null=True,blank=True) # only for floating point variables
-    min_value = models.FloatField(null=True,blank=True)
-    max_value = models.FloatField(null=True,blank=True)
+    min_value = models.CharField(max_length=200,null=True,blank=True)
+    max_value = models.CharField(max_length=200,null=True,blank=True)
     labels = models.TextField(null=True,blank=True)
     condition = models.TextField(null=True,blank=True)
     def __unicode__(self):
@@ -284,7 +297,7 @@ class Product(models.Model):
             max_length=200
             )
     def __unicode__(self):
-        return self.product_name
+        return self.get_product_name_display()
     class Meta:
         verbose_name=_("Produkt badania")
         verbose_name_plural=_(u"Produkty badania")

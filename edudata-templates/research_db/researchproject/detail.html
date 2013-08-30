@@ -4,17 +4,102 @@
 {% block content %}
 <h1>{{ researchproject.name }} </h1>
 
-<ul>
-    <li>Początek projektu: <strong>{{ researchproject.project_start }}</strong></li>
-    <li>Koniec projektu: <strong>{{ researchproject.project_end }}</strong></li>
-    <li>Wykonawca badania: <strong>{{ researchproject.subcontractor }}</strong></li>
+<table class="table table-striped table-bordered">
+	<tr>    
+		<td>Czas trwania projektu</td>
+		<td> <strong>{{ researchproject.project_start }} - {{ researchproject.project_end }}</strong></td>
+	</tr>
+	<tr>
+ 	        <td>Zespół IBE</td>
+		<td><strong> {{ researchproject.team.fullname }} </strong> </td>
+	</tr>
+	<tr>
+		<td>Osoba odpowiedzialna za projekt </td>
+		<td> <strong> {{researchproject.person }} </strong> </td>
+	</tr>
+	<tr>
+		<td>Sponsor badania </td>
+		<td> <strong> {{researchproject.sponsor }} </strong> </td>
+	</tr>
+    
+    	<tr>
+		<td>Wykonawca badania</td>
+		<td> <strong>{{ researchproject.subcontractor }}</strong></td>
+	</tr>
+	<tr>
+		<td>Abstrakt badania </td> <td> <strong>
+   {% if researchproject.project_description_html %} {{ researchproject.project_description_html|safe }} {% else %} <i>Brak abstraktu</i>
+	{% endif %}</strong></td>
+	</tr>
+	<tr>
+		<td>Wzór cytowania</td>
+		<td>{{ researchproject.citation_html|safe }} </td>
+	</tr>
+	<tr>
+		<td>Słowa kluczowe</td>
+		<td>{% for keyword in researchproject.research_keywords.all %}
+                                {{keyword}}{%if forloop.last %}{% else %},{%endif%}
 
-</ul>
+                                 {%empty%} <i>Nie zdefiniowano żadnych słów kluczowych</i>
+{% endfor %}</td>
+	</tr>
+</table>
 <h2>Zbiory danych</h2>
+<div class="tabbable tabs-left"> <!-- Only required for left/right tabs -->
 
+    <ul class="nav nav-tabs">
+	{% for dataframe in researchproject.dataframe_set.all %}
+		<li{% if forloop.first %} class="active"{% endif %}>
+			<a href="#tab{{ forloop.counter }}" data-toggle="tab">{{dataframe.name}}</a></li>
+	{% endfor %}
+    </ul>
+
+    <div class="tab-content">
+	{% for dataframe in researchproject.dataframe_set.all %}
+    	<div class="tab-pane{% if forloop.first %} active{% endif %}" id="tab{{ forloop.counter}}">
+	    <p>
+		<table class="table table-striped table-bordered">
+		    <tr><td> Badana populacja</td><td> {{ dataframe.population }} </td></tr>
+		    <tr><td>Słowa kluczowe</td><td>{% for keyword in dataframe.keyword.all %} 
+				{{keyword}}{%if forloop.last %}{% else %},{%endif%}
+
+				 {%empty%} <i>Nie zdefiniowano żadnych słów kluczowych</i>
+{% endfor %}</td></tr>
+		    <tr><td> Wielkość próby</td><td> {{ dataframe.sample_size}} </td></tr>
+		    <tr><td> Schemat doboru próby</td><td> {{ dataframe.sampling_description_html|safe }} </td></tr>
+		    <tr><td> Opis <i>response rate</i> w badaniu</td><td>{{ dataframe.response_rate_html|safe }}</td></tr>
+		    <tr><td> Metoda badawcza</td><td> {{ dataframe.research_methods_html|safe}} </td></tr>
+		    <tr><td> Techniki zbierania danych</td><td> {{ dataframe.collection_method}} </td></tr>
+		    <tr><td> Daty zbierania danych</td><td> {{dataframe.data_collection_start|default:"<i>brak daty</i>"}} - {{ dataframe.data_collection_end|default:"<i>brak daty</i>" }}
+		    <tr><td> Respondent</td><td> {{ dataframe.respondent}} </td></tr>
+		    <tr><td> Jednostka obserwacji</td><td> {{ dataframe.observation_unit}} </td></tr>
+		    <tr><td> Dane (csv)</td><td><a href="{{MEDIA_URL}}{{ dataframe.df }}">pobierz</a> </td>
+		    <tr><td> Codebook (opis zmiennych)</td><td> <a href="{{MEDIA_URL}}{{ dataframe.codebook_file }}">pobierz</a> </td>
+			
+		    {% for product in dataframe.product_set.all %}
+			<tr>
+		 	<td>{{ product }}</td>
+			<td> Pobierz: <a href="{{MEDIA_URL}}{{ product.product_file }}">{{product.product_file}}</a></td>
+			</tr>
+		     {% empty %}
+		    {% endfor %}
+
+			<tr>
+			    <td></td>
+			    <td>
+				<a href="{% url 'dataframe_basicinfo' dataframe.id  %}">Obejrzyj zbiór danych online</a>
+			    </td>
+			</tr>
+	     </table>
+	    </p>
+	</div>
+         {% endfor %}
+    </div>
+</div>
+<!--
 {% for dataframe in researchproject.dataframe_set.all %}
 <h3> {{dataframe.name}} </h3>
-<ul>
+<ul class="unstyled">
     <li> Badana populacja: {{ dataframe.population }} </li>
     <li> Wielkość próby: {{ dataframe.sample_size}} </li>
     <li> Schemat doboru próby: {{ dataframe.sampling_description_html|safe }} </li>
@@ -27,6 +112,6 @@
     <li> Codebook (opis zmiennych): <a href="{{MEDIA_URL}}{{ dataframe.codebook_file }}">pobierz</a> </li>
 
 </ul>
-    <a href="{% url 'dataframe_basicinfo' dataframe.id  %}">Obejrzyj zbiór danych online</a>
 {% endfor %}
+-->
 {% endblock %}

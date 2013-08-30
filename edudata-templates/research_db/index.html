@@ -14,9 +14,11 @@
 	</thead>
 	{% for researchproject in latest_researchproject_list %}
 	<tr>	
-		<td><a href="#">{{ researchproject.name}}</a> </td>
-		<td>{{ researchproject.subcontractor }} </td>
-		<td>{{ researchproject.team }} </td>
+		<td><a href="#">{{ researchproject.name }}</a> </td>
+		<td>{{ researchproject.project_start }} </td>
+		<td>{{ researchproject.project_end }} </td>
+		{% for keyword in researchproject.keywords }}
+		<td>{{ keyword }} </td>
 	</tr>
 	{% endfor %}
 	</table>

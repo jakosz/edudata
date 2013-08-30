@@ -18,13 +18,13 @@ class DataframeInline(NestedStackedInline):
     model = research_db.models.Dataframe
     inlines = [NestedProductInline]
     extra =1
-    exclude = ('sampling_description_html','response_rate_html',)
+    exclude = ('sampling_description_html','response_rate_html','research_methods_html')
 
 class DataframeAdmin(admin.ModelAdmin):
     formfield_overrides = {
             models.TextField: {'widget':AdminPagedownWidget},
             }
-    exclude = ('sampling_description_html','response_rate_html',)
+    exclude = ('sampling_description_html','response_rate_html','research_methods_html')
 
 class ResearchProjectAdmin(NestedModelAdmin):
     

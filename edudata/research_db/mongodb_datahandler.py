@@ -36,7 +36,13 @@ class MongoHandler:
                 
                 column['data'] = dict((int2str(key), value) for (key, value) in var_data.items()) 
             except KeyError:
-                e= "Failed to locate '{}' var in {} df columns ".format(column['name'], pandas_df.columns)
+		print column
+                e= "Nie znaleziono zmiennej '{0}' z codebooka w zbiorze danych: ".format(column['name'])
+		e += " {0} ".format(pandas_df.columns.tolist())
+		print "Column:"
+		print column['name']
+		print "in pandas df:"
+		print pandas_df.columns.tolist()
                 raise KeyError, e
             dataframes.insert(column)
             #data['columns'].append(column)
@@ -76,22 +82,28 @@ class MongoHandler:
         info = dict()
         # TU MUSI BYĆ SORTOWANIE po kluczu i to kluczu INTEGER!!
         for nr,column in enumerate(df): # type(df['columns']) == type([])
-            # first, get rownames
-            if nr == 0:
-                rownames = column['data'].keys()
-            # Replace decimal point ',' with '.' to convert it later to type 'float' 
-            if column['type'] == u'liczba rzeczywista':
-                column['data'] = dict((k, v.replace(',','.')) for (k, v) in column['data'].iteritems())
-            #convert rows from string to INTEGER
-            rows = dict((int(key), value) for (key, value) in column['data'].items()) 
-            # prepare dictionary of columns to convert them into pandas.DataFrame
-            dfdict[column['name']] = [value for (key,value) in rows.iteritems()]
-            info[column['name']] = dict((key,value) for key, value in column.iteritems() if key != 'data') # Copy everything but data
+	    # ignore column "_id"
+	    if column['name'] != '_id':		
+		    # first, get rownames
+		    if nr == 0:
+			rownames = column['data'].keys()
+		    # Replace decimal point ',' with '.' to convert it later to type 'float' 
+		    if column['type'] == u'liczba rzeczywista':
+			column['data'] = dict((k, v.replace(',','.')) for (k, v) in column['data'].iteritems())
+		    elif column['type'] == u'liczba całkowita':
+			pass
+		    else:
+			column['data'] = dict((k, v.encode('utf-8')) for (k, v) in column['data'].iteritems())
+		    #convert rows from string to INTEGER
+		    rows = dict((int(key), value) for (key, value) in column['data'].items()) 
+		    # prepare dictionary of columns to convert them into pandas.DataFrame
+		    dfdict[column['name']] = [value for (key,value) in rows.iteritems()]
+		    info[column['name']] = dict((key,value) for key, value in column.iteritems() if key != 'data') # Copy everything but data
         psDf = psDataFrame(dfdict, index = rownames )
         """
         If codebook states that the column is numeric than convert it to numeric
         """
-        for column in df['columns']:
+        for column in df:
             if column['type'] == u'liczba całkowita':
                 psDf[column['name']] = psDf[column['name']].astype(int)
             elif column['type'] == u'liczba rzeczywista': 

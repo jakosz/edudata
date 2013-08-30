@@ -4,19 +4,30 @@
 {% block content %}
 
 {% if researchproject_list %}
-	<table class="table table-stripped table-bordered" style="width:500px">
+	<table class="table table-stripped table-bordered">
 	<thead>
 		<tr class="header">
 			<th>Nazwa badania</th>
-			<th>Wykonawca</th>
-			<th>Zespół badawczy IBE</th>
+			<th>Daty realizacji projektu</th>
+			<th>Słowa kluczowe</th>
+			<th>Zespół IBE</th>
+			<th>Abstrakt</th>
 		</tr>
 	</thead>
 	{% for researchproject in researchproject_list %}
 	<tr>	
         <td><a href="{% url 'researchproject.detail' researchproject.id  %}">{{ researchproject.name}}</a> </td>
-		<td>{{ researchproject.subcontractor }} </td>
-		<td>{{ researchproject.team }} </td>
+                <td>	{{ researchproject.project_start }} - 
+			{{ researchproject.project_end }} </td>
+		<td>
+                {% for keyword in researchproject.research_keywords.all %}
+                {{ keyword }}, 
+		{% empty %}
+		Brak słów kluczowych
+		{% endfor %}
+		</td>
+		<td> {{ researchproject.team.fullname }} </td>
+		<td> {% if researchproject.project_description_html %} {{ researchproject.project_description_html|truncatewords:"10"|safe|default:"<i>Brak</i>" }} {% else %} <i>Brak abstraktu</i> {% endif %} </td>
 	</tr>
 	{% endfor %}
 	</table>

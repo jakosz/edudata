@@ -6,7 +6,7 @@ from local_settings import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
+DEFAULT_CHARSET = 'utf-8'
 ADMINS = (
     ('Mikolaj Hnatiuk', 'mikolaj.hnatiuk@gmail.com'),
 )
@@ -116,7 +116,7 @@ ROOT_URLCONF = 'edudata.urls'
 WSGI_APPLICATION = 'edudata.wsgi.application'
 
 TEMPLATE_DIRS = (
-    '/home/mikolaj/projekty-zawodowe/edudata/edudata-templates/',
+    '/home/edudata_user/edudata/edudata-templates/',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
