@@ -20,7 +20,11 @@ urlpatterns = patterns('',
 	url(r'^project/$',
 		ResearchProjectIndex.as_view(), name= "list"),
 	url(r'^project/(?P<pk>\d+)/$', ResearchProjectDetail.as_view(), name = "researchproject.detail"),
-        url(r'^dataframe_basicinfo/(?P<pk>\d+)/$', dataframe_basicinfo, name="dataframe_basicinfo")
+        url(r'^dataframe_basicinfo/(?P<pk>\d+)/$', dataframe_basicinfo, name="dataframe_basicinfo"),
+        url(r'^get_json_var/(?P<var_id>\d+)/$', get_json_var, name="get_json_var"),
+
+	url(r'^analyze_var/(?P<var_id>\d+)/$', analyze_var, name = "analyze_var"),
+	url(r'^histogram/(?P<var_id>\d+)/$', get_histogram, name = "get_histogram"),
 )
 
 

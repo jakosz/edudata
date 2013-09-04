@@ -2,15 +2,111 @@
 {% block title %}Lista badań IBE {% endblock %}
 
 {% block content %}
-{% if codebook_info %}
+    <div class="row">
+    <div class="span5">
+		<table class="table table-striped table-bordered">
+			<thead>
+				<th>Nazwa</th>
+				<th>Opis skrócony</th>
+				<th>Skala</th>
+				<th>Typ zmiennej</th>
+				<td>Zobacz statystyki</th>
+			</thead>
+		{% for var in variables %}
+			<tr>
+			    {# Each "var" is a Codebook model object. #}
+				<td>{{ var.name }}</td>
+				<td>
+<a class="btn btn-primary" data-html="true" data-content="<ul><li>Rozszerzony opis: {{ var.desc_long }}</li><li>Wartości od {{var.min_value }} do {{var.max_value}}</li>
+<li>{%if var.precision %}Dokładność: {{ var.precision }};{%endif%} Długość {{var.value_len|default:"<i>Brak</i>"}}</li><li>Etykiety: {{ var.labels|default:"<i>brak</i>" }}</li>" title="" 
+data-toggle="popover" href="#" data-original-title="Dodatkowe informacje">
+      <i class="icon-info-sign icon-white"></i></a>
+{{ var.desc_short }}
+				</td>
+				<td>{{ var.scale|default:"<i>brak</i>" }}</td>
+				<td>{{ var.type|default:"<i>brak</i>" }} </td>
+				<td>
+				<a class="btn analyze-var" var_id="{{var.id}}"><i class="icon-zoom-in"></i></a>
+				</td>
+				
+				
+    </a>
+		    </tr>
+		{% endfor %}
+		</table>
+		<div class="pagination">
+		    <span class="step-links">
+			{% if variables.has_previous %}
+			    <a href="?page={{ variables.previous_page_number }}">poprzednia</a>
+			{% endif %}
 
-    {{ codebook_info|safe }}
+			<span class="current">
+			    Strona {{ variables.number }} z {{ variables.paginator.num_pages }}.
+			</span>
 
-{% endif %}
-{% if summary_html %}
-{{ summary_html|safe }}
-{% else %}
-	<p>Nie otrzymano danych</p>
-{% endif %}
+			{% if variables.has_next %}
+			    <a href="?page={{ variables.next_page_number }}">następna</a>
+			{% endif %}
+		    </span>
+		</div>
 
+    </div><!-- variable selection field ends here -->
+	<div class="span7">
+	Display things
+		<div id="analyzer">
+			<div id="distribution"></div>			
+		</div>
+	<!-- Analyzer field -->
+	</div>
+<!-- grid ends --> </div>
+
+<script type="text/javascript">
+!function ($) {
+  $(function(){
+		var $window = $(window)
+		$("a[data-toggle=popover]")
+		    .popover()
+		    .click(function(e) {
+		      e.preventDefault()
+		    })
+	})
+	$.getJSON( "/research_db/get_json_var/21609/", function( json ) {
+	console.log( "JSON Data: " + json );
+	 var items = [];
+	$.each(json.data, function(key, val) {
+	items.push('<li id="' + key + '">' + val + '</li>');
+	});
+	 $('<ul/>', {
+		'class': 'mylist unstyled',
+		html: items.join('')
+		}).appendTo('#analyzer');
+
+
+	});
+
+	
+	$(".analyze-var").click(function() {
+		url = '/research_db/histogram/' + $(this).attr("var_id") + '/'
+		var img = new Image();
+		$('#distribution').html('');
+		$(img).load(function(){
+		  $('#distribution').append($(this));
+		}).attr({
+		         src: url
+	}).error(function(){
+	  //do something if image cannot load
+		$('#distribution').html('<em>Błąd rysowania histogramu</em>');
+		//$('#distribution).append('<em>Dla tej zmiennej nie można narysować histogramu</em>');
+	});
+
+   
+	});
+}(window.jQuery)
+
+
+
+
+</script>
+
+<script src="js/highcharts.js"></script>
 {% endblock %}
