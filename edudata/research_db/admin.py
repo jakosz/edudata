@@ -7,9 +7,17 @@ from nested_inlines.admin import NestedModelAdmin, NestedStackedInline, NestedTa
 
 from pagedown.widgets import AdminPagedownWidget
 
+
+
+class ReportInline(NestedStackedInline):
+    model = research_db.models.Report
+    extra = 2
+
+
 class NestedProductInline(NestedTabularInline):
     model = research_db.models.Product
     extra = 3
+
 class DataframeInline(NestedStackedInline):
     formfield_overrides = {
             models.TextField: {
@@ -18,18 +26,18 @@ class DataframeInline(NestedStackedInline):
     model = research_db.models.Dataframe
     inlines = [NestedProductInline]
     extra =1
-    exclude = ('sampling_description_html','response_rate_html','research_methods_html')
+    exclude = ('sampling_description_html','response_rate_html','research_methods_html', 'pretest_html', 'interviewers_control_methods_html')
 
 class DataframeAdmin(admin.ModelAdmin):
     formfield_overrides = {
             models.TextField: {'widget':AdminPagedownWidget},
             }
-    exclude = ('sampling_description_html','response_rate_html','research_methods_html')
+    exclude = ('sampling_description_html','response_rate_html','research_methods_html', 'pretest_html', 'interviewers_control_methods_html')
 
 class ResearchProjectAdmin(NestedModelAdmin):
     
 
-    inlines = [DataframeInline]
+    inlines = [ReportInline,DataframeInline]
     formfield_overrides = {
             models.TextField: {'widget':AdminPagedownWidget},
             #models.TextField: {'widget': Textarea(attrs={'rows':30,'cols':120})},
@@ -45,4 +53,4 @@ admin.site.register(research_db.models.Product)
 admin.site.register(research_db.models.ResearchKeyword)
 admin.site.register(research_db.models.DataframeKeyword)
 admin.site.register(research_db.models.Team)
-
+admin.site.register(research_db.models.Report)
