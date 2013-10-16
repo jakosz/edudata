@@ -109,21 +109,34 @@ class Dataframe(models.Model):
     population = models.CharField(_(u"Populacja badana"),
             help_text=_(u"Kto/co stanowiło populacje? Uczniowie, studenci, nauczyciele, gospodarstwa domowe, jednostki?"),
             max_length=400)
+
     sampling_description = models.TextField(_(u"Opis schematu doboru próby"),
             help_text=_(u"1. Czy nalezy stosowac wagi i jeśli tak, to jakie.\
             2. Dla badań podłużnych, opis 'retencji' próby: tzw. 'wykruszania' panelu"))
+
     sampling_description_html = models.TextField(blank=True)
+    
     sample_size = models.IntegerField(_(u"Liczebność próby"))
+
     response_rate = models.TextField(_(u"Opis response rate w badaniu"), 
             help_text=_(u"Dodatkowo: czy były stosowane próby rezerwowe?"))
+
     response_rate_html = models.TextField(blank=True)
+
 
     respondent = models.CharField(_(u"Respondent"),
             help_text=_(u"Od kogo zbierano informacje w badaniu?"),max_length=200)
 
     research_methods = models.TextField(_(u"Metoda badania"),
             help_text=_(u"__DO UZUPEŁNIENIA OPIS__"))
+
     research_methods_html = models.TextField(blank=True)
+
+    pretest = models.TextField(_(u"Opis pretestów"),blank=True,null=True,help_text=_(u"Opcjonalnie: Jak przeprowadzano pretest"))
+    pretest_html = models.TextField(blank=True,null=True)
+
+    interviewers_control_methods = models.TextField(_(u"Sposób kontroli ankieterów"),blank=True,null=True, help_text = _(u"W jaki sposób przeprowadzano kontrolę ankieterów. Np. 'Kontrola wewnętrzna IBE', 'Kontrole przeprowadzał Wykonawca', 'Kontrolę przeprowadzała firma zewnętrzna wyłoniona w przetargu (link do BIP)'"))
+    interviewers_control_methods_html = models.TextField(blank=True,null=True)
 
     collection_method = models.CharField(_(u"Techniki zbierania danych"),
             help_text=_(u"Np. CAWI, CATI, Aplikacja na tablety"),
@@ -299,7 +312,29 @@ class Product(models.Model):
     def __unicode__(self):
         return self.get_product_name_display()
     class Meta:
-        verbose_name=_("Produkt badania")
+        verbose_name=_(u"Produkt badania")
         verbose_name_plural=_(u"Produkty badania")
 
+
+class Report(models.Model):
+    report_name = models.CharField(_(u"Typ raportu"),max_length=200,
+			choices = (
+			    (_(u'Metodologiczny'),_(u'Metodologiczny')),
+			    (_(u'Merytoryczny'),_(u'Merytoryczny')),
+			    (_(u'Innego typu'),_(u'Innego typu') ),
+			    )
+			)
+    research_project = models.ForeignKey(ResearchProject,verbose_name=_(u"Projekt badawczy")) #FOREIGN KEY
+    product_file = models.FileField(_(u"Plik"),
+            upload_to = "data/%Y/%m/%d/reports",
+            max_length=200
+            )
+    def __unicode__(self):
+	return self.get_report_name_display()
+    class Meta:
+        verbose_name=_(u"Raport z badania")
+        verbose_name_plural =  _(u"Raporty z badań")
+
+
+    
 
